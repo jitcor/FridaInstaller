@@ -105,7 +105,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
     }
 
     public static String getDownloadPath() {
-        return getPreferences().getString("download_location", Environment.getExternalStorageDirectory() + "/XposedInstaller");
+        return getPreferences().getString("download_location", Environment.getExternalStorageDirectory() + "/FridaInstaller");
     }
 
     public void onCreate() {
