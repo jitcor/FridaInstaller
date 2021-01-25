@@ -32,7 +32,7 @@
             android:exported="true"
             android:theme="@style/Theme.XposedInstaller.Transparent">
             <intent-filter>
-                <action android:name="de.robv.android.xposed.installer.DOWNLOAD_DETAILS"/>
+                <action android:name="com.github.ihbing.frida.installer.DOWNLOAD_DETAILS"/>
 
                 <data android:scheme="package"/>
 
@@ -92,7 +92,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="de.robv.android.xposed.installer.fileprovider"
+            android:authorities="com.github.ihbing.frida.installer.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

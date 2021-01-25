@@ -74,7 +74,7 @@ public final class InstallZipUtil {
         }
 
 
-        ZipEntry xposedPropEntry = zip.getEntry("system/xposed.prop");
+        ZipEntry xposedPropEntry = zip.getEntry("system/frida.prop");
         if (xposedPropEntry != null) {
             try {
                 result.mXposedProp = parseXposedProp(zip.getInputStream(xposedPropEntry));
@@ -111,7 +111,7 @@ public final class InstallZipUtil {
         }
 
         public boolean isArchCompatible() {
-            return FrameworkZips.ARCH.equals(mArch);
+            return FrameworkZips.ARCH.equals( mArch);
         }
 
         public boolean isSdkCompatible() {

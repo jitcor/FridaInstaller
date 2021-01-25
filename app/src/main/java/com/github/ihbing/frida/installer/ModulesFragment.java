@@ -75,7 +75,7 @@ import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static com.github.ihbing.frida.installer.XposedApp.WRITE_EXTERNAL_PERMISSION;
 
 public class ModulesFragment extends ListFragment implements ModuleListener {
-    public static final String SETTINGS_CATEGORY = "de.robv.android.xposed.category.MODULE_SETTINGS";
+    public static final String SETTINGS_CATEGORY = "com.github.ihbing.frida.category.MODULE_SETTINGS";
     public static final String PLAY_STORE_PACKAGE = "com.android.vending";
     public static final String PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=%s";
     public static final String XPOSED_REPO_LINK = "http://repo.xposed.info/module/%s";
@@ -188,7 +188,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
         }
 
         String backupPath = Environment.getExternalStorageDirectory()
-                + "/XposedInstaller";
+                + "/FridaInstaller";
 
         File enabledModulesPath = new File(backupPath, "enabled_modules.list");
         File installedModulesPath = new File(backupPath, "installed_modules.list");

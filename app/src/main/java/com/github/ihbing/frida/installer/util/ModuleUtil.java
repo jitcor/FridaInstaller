@@ -88,7 +88,7 @@ public final class ModuleUtil {
                     continue;
 
                 InstalledModule installed = null;
-                if (app.metaData != null && app.metaData.containsKey("xposedmodule")) {
+                if (app.metaData != null && app.metaData.containsKey("fridamodule")) {
                     installed = new InstalledModule(pkg, false);
                     modules.put(pkg.packageName, installed);
                 } else if (isFramework(pkg.packageName)) {
@@ -289,7 +289,7 @@ public final class ModuleUtil {
                 this.minVersion = 0;
                 this.description = "";
             } else {
-                Object minVersionRaw = app.metaData.get("xposedminversion");
+                Object minVersionRaw = app.metaData.get("fridaminversion");
                 if (minVersionRaw instanceof Integer) {
                     this.minVersion = (Integer) minVersionRaw;
                 } else if (minVersionRaw instanceof String) {
@@ -319,7 +319,7 @@ public final class ModuleUtil {
 
         public String getDescription() {
             if (this.description == null) {
-                Object descriptionRaw = app.metaData.get("xposeddescription");
+                Object descriptionRaw = app.metaData.get("fridadescription");
                 String descriptionTmp = null;
                 if (descriptionRaw instanceof String) {
                     descriptionTmp = ((String) descriptionRaw).trim();
