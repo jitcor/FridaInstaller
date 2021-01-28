@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.installation.FlashCallback;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -66,12 +66,12 @@ public class RootUtil {
     public static class LogLineCallback implements LineCallback {
         @Override
         public void onLine(String line) {
-            Log.i(XposedApp.TAG, line);
+            Log.i(FridaApp.TAG, line);
         }
 
         @Override
         public void onErrorLine(String line) {
-            Log.e(XposedApp.TAG, line);
+            Log.e(FridaApp.TAG, line);
         }
     }
 
@@ -222,7 +222,7 @@ public class RootUtil {
         try {
             return file.getCanonicalPath();
         } catch (IOException e) {
-            Log.w(XposedApp.TAG, "Could not get canonical path for " + file);
+            Log.w(FridaApp.TAG, "Could not get canonical path for " + file);
             return file.getAbsolutePath();
         }
     }

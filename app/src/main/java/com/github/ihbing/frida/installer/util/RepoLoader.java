@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPInputStream;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.repo.Module;
 import com.github.ihbing.frida.installer.repo.ModuleVersion;
 import com.github.ihbing.frida.installer.repo.ReleaseType;
@@ -32,7 +32,7 @@ import com.github.ihbing.frida.installer.repo.Repository;
 public class RepoLoader extends OnlineLoader<RepoLoader> {
     private static final String DEFAULT_REPOSITORIES = "http://dl.xposed.info/repo/full.xml.gz";
     private static RepoLoader mInstance = null;
-    private static final XposedApp sApp = XposedApp.getInstance();
+    private static final FridaApp sApp = FridaApp.getInstance();
     private final Map<String, ReleaseType> mLocalReleaseTypesCache = new HashMap<>();
     private SharedPreferences mModulePref;
     private Map<Long, Repository> mRepositories = null;
@@ -43,7 +43,7 @@ public class RepoLoader extends OnlineLoader<RepoLoader> {
         mPref = sApp.getSharedPreferences("repo", Context.MODE_PRIVATE);
         mPrefKeyLastUpdateCheck = "last_update_check";
         mModulePref = sApp.getSharedPreferences("module_settings", Context.MODE_PRIVATE);
-        mGlobalReleaseType = ReleaseType.fromString(XposedApp.getPreferences().getString("release_type_global", "stable"));
+        mGlobalReleaseType = ReleaseType.fromString(FridaApp.getPreferences().getString("release_type_global", "stable"));
         refreshRepositories();
     }
 
@@ -200,7 +200,7 @@ public class RepoLoader extends OnlineLoader<RepoLoader> {
 
         boolean hasChanged = downloadAndParseFiles(messages);
         if (!messages.isEmpty()) {
-            XposedApp.runOnUiThread(new Runnable() {
+            FridaApp.runOnUiThread(new Runnable() {
                 public void run() {
                     for (String message : messages) {
                         Toast.makeText(sApp, message, Toast.LENGTH_LONG).show();
@@ -228,7 +228,7 @@ public class RepoLoader extends OnlineLoader<RepoLoader> {
             DownloadsUtil.SyncDownloadInfo info = DownloadsUtil.downloadSynchronously(url,
                     cacheFile);
 
-            Log.i(XposedApp.TAG, String.format(
+            Log.i(FridaApp.TAG, String.format(
                     "Downloaded %s with status %d (error: %s), size %d bytes",
                     url, info.status, info.errorMessage, cacheFile.length()));
 
@@ -280,7 +280,7 @@ public class RepoLoader extends OnlineLoader<RepoLoader> {
                             repo.version = repository.version;
                         }
 
-                        Log.i(XposedApp.TAG, String.format(
+                        Log.i(FridaApp.TAG, String.format(
                                 "Updated repository %s to version %s (%d new / %d removed modules)",
                                 repo.url, repo.version, insertCounter.get(),
                                 deleteCounter.get()));
@@ -289,7 +289,7 @@ public class RepoLoader extends OnlineLoader<RepoLoader> {
 
                 RepoDb.setTransactionSuccessful();
             } catch (Throwable t) {
-                Log.e(XposedApp.TAG, "Cannot load repository from " + url, t);
+                Log.e(FridaApp.TAG, "Cannot load repository from " + url, t);
                 messages.add(sApp.getString(R.string.repo_load_failed, url, t.getMessage()));
                 DownloadsUtil.clearCache(url);
             } finally {

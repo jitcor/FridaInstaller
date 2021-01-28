@@ -57,7 +57,7 @@ public class DownloadFragment extends Fragment implements Loader.Listener<RepoLo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPref = XposedApp.getPreferences();
+        mPref = FridaApp.getPreferences();
         mRepoLoader = RepoLoader.getInstance();
         mModuleUtil = ModuleUtil.getInstance();
         mAdapter = new DownloadsAdapter(getActivity());

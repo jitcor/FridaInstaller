@@ -1,0 +1,20 @@
+{
+  "zips": [
+    {
+      "title": "Version $(version)",
+      "url": "https://github.com/frida/frida/releases/download/{version}.0.0/frida-inject-{version}.0.0-android-{arch}.xz",
+      "versions": [
+        { "version": "14", "current": true },
+        { "version": "12" }
+      ],
+      "archs": ["arm", "arm64", "x86","x86_64"],
+      "sdks" : [19,20,21, 22, 23, 24, 25,26,27,28],
+      "exclude": [
+        {
+          "versions": ["9999"],
+          "sdks": [21, 22, 23]
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -47,7 +47,7 @@ public final class RepoDb extends SQLiteOpenHelper {
     }
 
     static {
-        RepoDb instance = new RepoDb(XposedApp.getInstance());
+        RepoDb instance = new RepoDb(FridaApp.getInstance());
         sDb = instance.getWritableDatabase();
         sDb.execSQL("PRAGMA foreign_keys=ON");
         instance.createTempTables(sDb);

@@ -29,16 +29,16 @@ import android.widget.TextView;
 import java.io.File;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.XposedBaseActivity;
 import com.github.ihbing.frida.installer.util.RootUtil;
 
 public class InstallationActivity extends XposedBaseActivity {
     private static final int REBOOT_COUNTDOWN = 15000;
 
-    private static final int MEDIUM_ANIM_TIME = XposedApp.getInstance().getResources()
+    private static final int MEDIUM_ANIM_TIME = FridaApp.getInstance().getResources()
             .getInteger(android.R.integer.config_mediumAnimTime);
-    private static final int LONG_ANIM_TIME = XposedApp.getInstance().getResources()
+    private static final int LONG_ANIM_TIME = FridaApp.getInstance().getResources()
             .getInteger(android.R.integer.config_longAnimTime);
 
     @Override
@@ -47,7 +47,7 @@ public class InstallationActivity extends XposedBaseActivity {
 
         Flashable flashable = getIntent().getParcelableExtra(Flashable.KEY);
         if (flashable == null) {
-            Log.e(XposedApp.TAG, InstallationActivity.class.getName() + ": Flashable is missing");
+            Log.e(FridaApp.TAG, InstallationActivity.class.getName() + ": Flashable is missing");
             finish();
             return;
         }
@@ -134,7 +134,7 @@ public class InstallationActivity extends XposedBaseActivity {
                 Thread.sleep(60);
             } catch (InterruptedException ignored) {
             }
-            XposedApp.postOnUiThread(new Runnable() {
+            FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     appendText(line, TYPE_NONE);
@@ -148,7 +148,7 @@ public class InstallationActivity extends XposedBaseActivity {
                 Thread.sleep(60);
             } catch (InterruptedException ignored) {
             }
-            XposedApp.postOnUiThread(new Runnable() {
+            FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     appendText(line, TYPE_ERROR);
@@ -205,12 +205,12 @@ public class InstallationActivity extends XposedBaseActivity {
 
         @Override
         public void onDone() {
-            XposedApp.getInstance().reloadXposedProp();
+            FridaApp.getInstance().reloadXposedProp();
             try {
                 Thread.sleep(LONG_ANIM_TIME);
             } catch (InterruptedException ignored) {
             }
-            XposedApp.postOnUiThread(new Runnable() {
+            FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     appendText("\n" + getString(R.string.file_done), TYPE_OK);
@@ -323,7 +323,7 @@ public class InstallationActivity extends XposedBaseActivity {
 
         @Override
         public void onError(final int exitCode, final String error) {
-            XposedApp.postOnUiThread(new Runnable() {
+            FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     appendText(error, TYPE_ERROR);

@@ -23,17 +23,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.ihbing.frida.installer.ModulesFragment;
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.repo.ModuleVersion;
 import com.github.ihbing.frida.installer.repo.RepoDb;
 
 public final class ModuleUtil {
     // xposedminversion below this
-    private static final String MODULES_LIST_FILE = XposedApp.BASE_DIR + "conf/modules.list";
+    private static final String MODULES_LIST_FILE = FridaApp.BASE_DIR + "conf/modules.list";
     private static final String PLAY_STORE_PACKAGE = "com.android.vending";
     public static int MIN_MODULE_VERSION = 2; // reject modules with
     private static ModuleUtil mInstance = null;
-    private final XposedApp mApp;
+    private final FridaApp mApp;
     private final PackageManager mPm;
     private final String mFrameworkPackageName;
     private final List<ModuleListener> mListeners = new CopyOnWriteArrayList<ModuleListener>();
@@ -44,7 +44,7 @@ public final class ModuleUtil {
     private Toast mToast;
 
     private ModuleUtil() {
-        mApp = XposedApp.getInstance();
+        mApp = FridaApp.getInstance();
         mPref = mApp.getSharedPreferences("enabled_modules", Context.MODE_PRIVATE);
         mPm = mApp.getPackageManager();
         mFrameworkPackageName = mApp.getPackageName();
@@ -198,11 +198,11 @@ public final class ModuleUtil {
 
     public synchronized void updateModulesList(boolean showToast) {
         try {
-            Log.i(XposedApp.TAG, "updating modules.list");
-            int installedXposedVersion = XposedApp.getInstalledXposedVersion();
+            Log.i(FridaApp.TAG, "updating modules.list");
+            int installedXposedVersion = FridaApp.getInstalledXposedVersion();
 
             PrintWriter modulesList = new PrintWriter(MODULES_LIST_FILE);
-            PrintWriter enabledModulesList = new PrintWriter(XposedApp.ENABLED_MODULES_LIST_FILE);
+            PrintWriter enabledModulesList = new PrintWriter(FridaApp.ENABLED_MODULES_LIST_FILE);
 
             List<InstalledModule> enabledModules = getEnabledModules();
             for (InstalledModule module : enabledModules) {
@@ -224,12 +224,12 @@ public final class ModuleUtil {
             enabledModulesList.close();
 
             FileUtils.setPermissions(MODULES_LIST_FILE, 00664, -1, -1);
-            FileUtils.setPermissions(XposedApp.ENABLED_MODULES_LIST_FILE, 00664, -1, -1);
+            FileUtils.setPermissions(FridaApp.ENABLED_MODULES_LIST_FILE, 00664, -1, -1);
 
             if (showToast)
                 showToast(R.string.xposed_module_list_updated);
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "cannot write " + MODULES_LIST_FILE, e);
+            Log.e(FridaApp.TAG, "cannot write " + MODULES_LIST_FILE, e);
             Toast.makeText(mApp, "cannot write " + MODULES_LIST_FILE + e, Toast.LENGTH_SHORT).show();
         }
     }

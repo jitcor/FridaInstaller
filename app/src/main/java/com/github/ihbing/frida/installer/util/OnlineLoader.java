@@ -6,15 +6,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.CallSuper;
 
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 public abstract class OnlineLoader<T> extends Loader<T> {
-    protected SharedPreferences mPref = XposedApp.getPreferences();
+    protected SharedPreferences mPref = FridaApp.getPreferences();
     protected String mPrefKeyLastUpdateCheck = CLASS_NAME + "_last_update_check";
     protected int mUpdateFrequency = 24 * 60 * 60 * 1000;
 
     private static final ConnectivityManager sConMgr
-            = (ConnectivityManager) XposedApp.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+            = (ConnectivityManager) FridaApp.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
 
     protected boolean shouldUpdate() {
         long now = System.currentTimeMillis();

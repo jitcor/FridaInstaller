@@ -37,7 +37,7 @@
     <string name="framework_active">Xposed 框架 %s 版已啟用。</string>
     <string name="framework_not_active">Xposed 框架 %s 版已安裝，但尚未啟用。 請查看日誌以了解細節。</string>
     <string name="framework_not_installed">Xposed 框架未安裝。</string>
-    <string name="status">Xposed 狀態</string>
+    <string name="status">Frida 狀態</string>
     <string name="xposed_on_next_reboot">Xposed 框架將在下次重新啟動裝置後啟用</string>
     <string name="xposed_off_next_reboot">Xposed 框架將在下次重新啟動裝置後停用</string>
 

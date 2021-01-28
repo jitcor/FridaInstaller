@@ -147,7 +147,7 @@ public class DownloadDetailsVersionsFragment extends ListFragment {
                 return;
             }
 
-            XposedApp.installApk(context, info);
+            FridaApp.installApk(context, info);
         }
     }
 

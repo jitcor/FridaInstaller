@@ -25,12 +25,12 @@ import java.lang.reflect.Method;
 import com.github.ihbing.frida.installer.util.AssetUtil;
 import com.github.ihbing.frida.installer.util.DownloadsUtil;
 import com.github.ihbing.frida.installer.util.InstallZipUtil;
-import com.github.ihbing.frida.installer.util.InstallZipUtil.XposedProp;
+import com.github.ihbing.frida.installer.util.InstallZipUtil.FridaProp;
 import com.github.ihbing.frida.installer.util.NotificationUtil;
 import com.github.ihbing.frida.installer.util.RepoLoader;
 
-public class XposedApp extends Application implements ActivityLifecycleCallbacks {
-    public static final String TAG = "XposedInstaller";
+public class FridaApp extends Application implements ActivityLifecycleCallbacks {
+    public static final String TAG = "FridaInstaller";
 
     @SuppressLint("SdCardPath")
     private static final String BASE_DIR_LEGACY = "/data/data/com.github.ihbing.frida.installer/";
@@ -38,7 +38,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
     public static final String BASE_DIR = Build.VERSION.SDK_INT >= 24
             ? "/data/user_de/0/com.github.ihbing.frida.installer/" : BASE_DIR_LEGACY;
 
-    public static final String ENABLED_MODULES_LIST_FILE = XposedApp.BASE_DIR + "conf/enabled_modules.list";
+    public static final String ENABLED_MODULES_LIST_FILE = FridaApp.BASE_DIR + "conf/enabled_modules.list";
 
     private static final String[] XPOSED_PROP_FILES = new String[]{
             "/su/frida/frida.prop", // official systemless
@@ -46,14 +46,14 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
     };
 
     public static int WRITE_EXTERNAL_PERMISSION = 69;
-    private static XposedApp mInstance = null;
+    private static FridaApp mInstance = null;
     private static Thread mUiThread;
     private static Handler mMainHandler;
     private boolean mIsUiLoaded = false;
     private SharedPreferences mPref;
-    private XposedProp mXposedProp;
+    private FridaProp mFridaProp;
 
-    public static XposedApp getInstance() {
+    public static FridaApp getInstance() {
         return mInstance;
     }
 
@@ -75,13 +75,13 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
     }
 
     public static int getInstalledXposedVersion() {
-        XposedProp prop = getXposedProp();
+        FridaProp prop = getXposedProp();
         return prop != null ? prop.getVersionInt() : -1;
     }
 
-    public static XposedProp getXposedProp() {
+    public static FridaProp getXposedProp() {
         synchronized (mInstance) {
-            return mInstance.mXposedProp;
+            return mInstance.mFridaProp;
         }
     }
 
@@ -135,7 +135,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
                 deleteDir.invoke(null, new File(BASE_DIR_LEGACY, "conf"));
                 deleteDir.invoke(null, new File(BASE_DIR_LEGACY, "log"));
             } catch (ReflectiveOperationException e) {
-                Log.w(XposedApp.TAG, "Failed to delete obsolete directories", e);
+                Log.w(FridaApp.TAG, "Failed to delete obsolete directories", e);
             }
         }
     }
@@ -147,7 +147,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
     }
 
     public void reloadXposedProp() {
-        XposedProp prop = null;
+        FridaProp prop = null;
 
         for (String path : XPOSED_PROP_FILES) {
             File file = new File(path);
@@ -158,7 +158,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
                     prop = InstallZipUtil.parseXposedProp(is);
                     break;
                 } catch (IOException e) {
-                    Log.e(XposedApp.TAG, "Could not read " + file.getPath(), e);
+                    Log.e(FridaApp.TAG, "Could not read " + file.getPath(), e);
                 } finally {
                     if (is != null) {
                         try {
@@ -171,7 +171,7 @@ public class XposedApp extends Application implements ActivityLifecycleCallbacks
         }
 
         synchronized (this) {
-            mXposedProp = prop;
+            mFridaProp = prop;
         }
     }
 

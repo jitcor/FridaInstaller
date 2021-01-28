@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.util.AssetUtil;
 import com.github.ihbing.frida.installer.util.FrameworkZips;
 import com.github.ihbing.frida.installer.util.InstallZipUtil.ZipCheckResult;
@@ -44,11 +44,11 @@ public class FlashDirectly extends Flashable {
 
         // Extract update-binary.
         ZipEntry entry = zip.getEntry("META-INF/com/google/android/update-binary");
-        File updateBinaryFile = new File(XposedApp.getInstance().getCacheDir(), "update-binary");
+        File updateBinaryFile = new File(FridaApp.getInstance().getCacheDir(), "update-binary");
         try {
             AssetUtil.writeStreamToFile(zip.getInputStream(entry), updateBinaryFile, 0700);
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "Could not extract update-binary", e);
+            Log.e(FridaApp.TAG, "Could not extract update-binary", e);
             triggerError(callback, FlashCallback.ERROR_INVALID_ZIP);
             return;
         } finally {

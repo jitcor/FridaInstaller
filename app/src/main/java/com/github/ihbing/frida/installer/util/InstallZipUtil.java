@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
 
 import com.github.ihbing.frida.installer.BuildConfig;
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.installation.FlashCallback;
 
 public final class InstallZipUtil {
@@ -31,7 +31,7 @@ public final class InstallZipUtil {
         private final ZipFile mZip;
         private boolean mValidZip = false;
         private boolean mFlashableInApp = false;
-        private XposedProp mXposedProp = null;
+        private FridaProp mFridaProp = null;
 
         public ZipFile getZip() {
             return mZip;
@@ -46,11 +46,11 @@ public final class InstallZipUtil {
         }
 
         public boolean hasXposedProp() {
-            return mXposedProp != null;
+            return mFridaProp != null;
         }
 
-        public XposedProp getXposedProp() {
-            return mXposedProp;
+        public FridaProp getXposedProp() {
+            return mFridaProp;
         }
 
         private ZipCheckResult(ZipFile zip) {
@@ -77,16 +77,16 @@ public final class InstallZipUtil {
         ZipEntry xposedPropEntry = zip.getEntry("system/frida.prop");
         if (xposedPropEntry != null) {
             try {
-                result.mXposedProp = parseXposedProp(zip.getInputStream(xposedPropEntry));
+                result.mFridaProp = parseXposedProp(zip.getInputStream(xposedPropEntry));
             } catch (IOException e) {
-                Log.e(XposedApp.TAG, "Failed to read system/xposed.prop from " + zip.getName(), e);
+                Log.e(FridaApp.TAG, "Failed to read system/xposed.prop from " + zip.getName(), e);
             }
         }
 
         return result;
     }
 
-    public static class XposedProp {
+    public static class FridaProp {
         private String mVersion = null;
         private int mVersionInt = 0;
         private String mArch = null;
@@ -129,8 +129,8 @@ public final class InstallZipUtil {
         }
     }
 
-    public static XposedProp parseXposedProp(InputStream is) throws IOException {
-        XposedProp prop = new XposedProp();
+    public static FridaProp parseXposedProp(InputStream is) throws IOException {
+        FridaProp prop = new FridaProp();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
         while ((line = reader.readLine()) != null) {
@@ -164,7 +164,7 @@ public final class InstallZipUtil {
     }
 
     public static String messageForError(int code, Object... args) {
-        Context context = XposedApp.getInstance();
+        Context context = FridaApp.getInstance();
         switch (code) {
             case FlashCallback.ERROR_TIMEOUT:
                 return context.getString(R.string.flash_error_timeout);
@@ -206,8 +206,8 @@ public final class InstallZipUtil {
     }
 
     public static void reportMissingFeatures(Set<String> missingFeatures) {
-        Log.e(XposedApp.TAG, "Installer version: " + BuildConfig.VERSION_NAME);
-        Log.e(XposedApp.TAG, "Missing installer features: " + missingFeatures);
+        Log.e(FridaApp.TAG, "Installer version: " + BuildConfig.VERSION_NAME);
+        Log.e(FridaApp.TAG, "Missing installer features: " + missingFeatures);
     }
 
     private InstallZipUtil() {

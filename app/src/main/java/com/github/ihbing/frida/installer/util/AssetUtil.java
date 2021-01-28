@@ -5,7 +5,7 @@ import android.os.Build;
 import android.os.FileUtils;
 import android.util.Log;
 
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AssetUtil {
-    public static final File BUSYBOX_FILE = new File(XposedApp.getInstance().getCacheDir(), "busybox-xposed");
+    public static final File BUSYBOX_FILE = new File(FridaApp.getInstance().getCacheDir(), "busybox-xposed");
 
     @SuppressWarnings("deprecation")
     public static String getBinariesFolder() {
@@ -29,12 +29,12 @@ public class AssetUtil {
     public static File writeAssetToFile(AssetManager assets, String assetName, File targetFile, int mode) {
         try {
             if (assets == null)
-                assets = XposedApp.getInstance().getAssets();
+                assets = FridaApp.getInstance().getAssets();
             InputStream in = assets.open(assetName);
             writeStreamToFile(in, targetFile, mode);;
             return targetFile;
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "could not extract asset", e);
+            Log.e(FridaApp.TAG, "could not extract asset", e);
             if (targetFile != null)
                 targetFile.delete();
 

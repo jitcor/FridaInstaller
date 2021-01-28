@@ -16,7 +16,7 @@ import android.text.util.Linkify;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 public final class NavUtil {
 
@@ -31,7 +31,7 @@ public final class NavUtil {
     }
 
     public static void startURL(Activity activity, Uri uri) {
-        if (!XposedApp.getPreferences().getBoolean("chrome_tabs", true)) {
+        if (!FridaApp.getPreferences().getBoolean("chrome_tabs", true)) {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, activity.getPackageName());
             activity.startActivity(intent);
@@ -50,7 +50,7 @@ public final class NavUtil {
 
     @AnyThread
     public static void showMessage(final @NonNull Context context, final CharSequence message) {
-        XposedApp.runOnUiThread(new Runnable() {
+        FridaApp.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 new MaterialDialog.Builder(context)

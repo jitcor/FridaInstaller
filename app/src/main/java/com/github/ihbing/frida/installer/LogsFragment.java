@@ -37,9 +37,9 @@ import java.util.Calendar;
 
 public class LogsFragment extends Fragment {
 
-    private File mFileErrorLog = new File(XposedApp.BASE_DIR + "log/error.log");
+    private File mFileErrorLog = new File(FridaApp.BASE_DIR + "log/error.log");
     private File mFileErrorLogOld = new File(
-            XposedApp.BASE_DIR + "log/error.log.old");
+            FridaApp.BASE_DIR + "log/error.log.old");
     private TextView mTxtLog;
     private ScrollView mSVLog;
     private HorizontalScrollView mHSVLog;
@@ -188,7 +188,7 @@ public class LogsFragment extends Fragment {
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions,
                 grantResults);
-        if (requestCode == XposedApp.WRITE_EXTERNAL_PERMISSION) {
+        if (requestCode == FridaApp.WRITE_EXTERNAL_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (mClickedMenuItem != null) {
                     new Handler().postDelayed(new Runnable() {
@@ -207,7 +207,7 @@ public class LogsFragment extends Fragment {
     @SuppressLint("DefaultLocale")
     private File save() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            FragmentCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, XposedApp.WRITE_EXTERNAL_PERMISSION);
+            FragmentCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, FridaApp.WRITE_EXTERNAL_PERMISSION);
             return null;
         }
 

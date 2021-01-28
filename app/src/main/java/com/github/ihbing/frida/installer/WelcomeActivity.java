@@ -231,7 +231,7 @@ public class WelcomeActivity extends XposedBaseActivity implements NavigationVie
             }
         }
 
-        boolean snackBar = XposedApp.getPreferences().getBoolean("snack_bar", true);
+        boolean snackBar = FridaApp.getPreferences().getBoolean("snack_bar", true);
 
         if (moduleUpdateAvailable && snackBar) {
             Snackbar.make(parentLayout, com.github.ihbing.frida.installer.R.string.modules_updates_available, Snackbar.LENGTH_LONG).setAction(getString(com.github.ihbing.frida.installer.R.string.view), new View.OnClickListener() {

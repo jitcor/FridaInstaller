@@ -59,14 +59,14 @@ public class SettingsActivity extends XposedBaseActivity implements FolderChoose
     @Override
     public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
         if (folder.canWrite()) {
-            XposedApp.getPreferences().edit().putString("download_location", folder.getPath()).apply();
+            FridaApp.getPreferences().edit().putString("download_location", folder.getPath()).apply();
         } else {
             Toast.makeText(this, com.github.ihbing.frida.installer.R.string.sdcard_not_writable, Toast.LENGTH_SHORT).show();
         }
     }
 
     public static class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
-        private static final File mDisableResourcesFlag = new File(XposedApp.BASE_DIR + "conf/disable_resources");
+        private static final File mDisableResourcesFlag = new File(FridaApp.BASE_DIR + "conf/disable_resources");
         private Preference mClickedPreference;
         private Preference downloadLocation;
 
@@ -141,7 +141,7 @@ public class SettingsActivity extends XposedBaseActivity implements FolderChoose
 
                 new FolderChooserDialog.Builder((SettingsActivity) getActivity())
                         .cancelButton(android.R.string.cancel)
-                        .initialPath(XposedApp.getDownloadPath())
+                        .initialPath(FridaApp.getDownloadPath())
                         .show();
             }
 

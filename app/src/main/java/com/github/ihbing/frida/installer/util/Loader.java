@@ -2,7 +2,7 @@ package com.github.ihbing.frida.installer.util;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -129,7 +129,7 @@ public abstract class Loader<T> implements SwipeRefreshLayout.OnRefreshListener 
             return;
         }
 
-        XposedApp.runOnUiThread(new Runnable() {
+        FridaApp.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 synchronized (Loader.this) {

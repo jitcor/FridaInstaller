@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.repo.Module;
 import com.github.ihbing.frida.installer.repo.ModuleVersion;
 import com.github.ihbing.frida.installer.repo.ReleaseType;
@@ -45,7 +45,7 @@ public class DownloadsUtil {
     public static final String MIME_TYPE_APK = "application/vnd.android.package-archive";
     public static final String MIME_TYPE_ZIP = "application/zip";
     private static final Map<String, DownloadFinishedCallback> mCallbacks = new HashMap<>();
-    private static final XposedApp mApp = XposedApp.getInstance();
+    private static final FridaApp mApp = FridaApp.getInstance();
     private static final SharedPreferences mPref = mApp
             .getSharedPreferences("download_cache", Context.MODE_PRIVATE);
 
@@ -108,7 +108,7 @@ public class DownloadsUtil {
     public static String DOWNLOAD_MODULES = "modules";
 
     public static File[] getDownloadDirs(String subDir) {
-        Context context = XposedApp.getInstance();
+        Context context = FridaApp.getInstance();
         ArrayList<File> dirs = new ArrayList<>(2);
         for (File dir : ContextCompat.getExternalCacheDirs(context)) {
             if (dir != null && EnvironmentCompat.getStorageState(dir).equals(Environment.MEDIA_MOUNTED)) {
@@ -208,7 +208,7 @@ public class DownloadsUtil {
                         return;
                     } else if (info.status == DownloadManager.STATUS_FAILED) {
                         dialog.cancel();
-                        XposedApp.runOnUiThread(new Runnable() {
+                        FridaApp.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(context,
@@ -227,7 +227,7 @@ public class DownloadsUtil {
                         return;
                     }
 
-                    XposedApp.runOnUiThread(new Runnable() {
+                    FridaApp.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (info.totalSize <= 0 || info.status != DownloadManager.STATUS_RUNNING) {
@@ -385,7 +385,7 @@ public class DownloadsUtil {
         try {
             filename = file.getCanonicalPath();
         } catch (IOException e) {
-            Log.w(XposedApp.TAG, "Could not resolve path for " + file.getAbsolutePath(), e);
+            Log.w(FridaApp.TAG, "Could not resolve path for " + file.getAbsolutePath(), e);
             return;
         }
 
@@ -472,7 +472,7 @@ public class DownloadsUtil {
         if (uri.getScheme().equals("file")) {
             return uri.getPath();
         } else if (uri.getScheme().equals("content")) {
-            Context context = XposedApp.getInstance();
+            Context context = FridaApp.getInstance();
             Cursor c = null;
             try {
                 c = context.getContentResolver().query(uri, new String[]{MediaStore.Files.FileColumns.DATA}, null, null, null);

@@ -5,7 +5,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.XposedBaseActivity;
 
 public final class ThemeUtil {
@@ -18,7 +18,7 @@ public final class ThemeUtil {
 	}
 
 	public static int getSelectTheme() {
-		int theme = XposedApp.getPreferences().getInt("theme", 0);
+		int theme = FridaApp.getPreferences().getInt("theme", 0);
 		return (theme >= 0 && theme < THEMES.length) ? theme : 0;
 	}
 

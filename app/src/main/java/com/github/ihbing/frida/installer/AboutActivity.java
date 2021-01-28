@@ -120,6 +120,7 @@ public class AboutActivity extends XposedBaseActivity {
             notices.addNotice(new Notice("libsuperuser", "https://github.com/Chainfire/libsuperuser", "Copyright (C) 2012-2015 Jorrit \"Chainfire\" Jongma", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("picasso", "https://github.com/square/picasso", "Copyright 2013 Square, Inc.", new ApacheSoftwareLicense20()));
             notices.addNotice(new Notice("materialdesignicons", "http://materialdesignicons.com", "Copyright (c) 2014, Austin Andrews", new SILOpenFontLicense11()));
+            notices.addNotice(new Notice("commons-compress", "https://github.com/apache/commons-compress", "Copyright (c) 2020 The Apache Software Foundation.", new ApacheSoftwareLicense20()));
 
             new LicensesDialog.Builder(getActivity())
                     .setNotices(notices)

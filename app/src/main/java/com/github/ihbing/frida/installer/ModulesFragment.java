@@ -72,7 +72,7 @@ import com.github.ihbing.frida.installer.util.RepoLoader;
 import com.github.ihbing.frida.installer.util.ThemeUtil;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
-import static com.github.ihbing.frida.installer.XposedApp.WRITE_EXTERNAL_PERMISSION;
+import static com.github.ihbing.frida.installer.FridaApp.WRITE_EXTERNAL_PERMISSION;
 
 public class ModulesFragment extends ListFragment implements ModuleListener {
     public static final String SETTINGS_CATEGORY = "com.github.ihbing.frida.category.MODULE_SETTINGS";
@@ -121,8 +121,8 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        installedXposedVersion = XposedApp.getInstalledXposedVersion();
-        if (installedXposedVersion < 0 || XposedApp.getActiveXposedVersion() < 0 || StatusInstallerFragment.DISABLE_FILE.exists()) {
+        installedXposedVersion = FridaApp.getInstalledXposedVersion();
+        if (installedXposedVersion < 0 || FridaApp.getActiveXposedVersion() < 0 || StatusInstallerFragment.DISABLE_FILE.exists()) {
             View notActiveNote = getActivity().getLayoutInflater().inflate(com.github.ihbing.frida.installer.R.layout.xposed_not_active_note, getListView(), false);
             if (installedXposedVersion < 0) {
                 ((TextView) notActiveNote.findViewById(android.R.id.title)).setText(com.github.ihbing.frida.installer.R.string.framework_not_installed);
@@ -193,7 +193,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
         File enabledModulesPath = new File(backupPath, "enabled_modules.list");
         File installedModulesPath = new File(backupPath, "installed_modules.list");
         File targetDir = new File(backupPath);
-        File listModules = new File(XposedApp.ENABLED_MODULES_LIST_FILE);
+        File listModules = new File(FridaApp.ENABLED_MODULES_LIST_FILE);
 
         mClickedMenuItem = item;
 
@@ -298,7 +298,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
         try {
             ips = new FileInputStream(path);
         } catch (FileNotFoundException e) {
-            Log.e(XposedApp.TAG, "Could not open " + path, e);
+            Log.e(FridaApp.TAG, "Could not open " + path, e);
         }
 
         if (path.length() == 0) {

@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.util.DownloadsUtil;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadFinishedCallback;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadInfo;
@@ -54,7 +54,7 @@ import com.github.ihbing.frida.installer.util.RootUtil;
 import com.github.ihbing.frida.installer.util.RunnableWithParam;
 
 public class StatusInstallerFragment extends Fragment {
-    public static final File DISABLE_FILE = new File(XposedApp.BASE_DIR + "conf/disabled");
+    public static final File DISABLE_FILE = new File(FridaApp.BASE_DIR + "conf/disabled");
     private boolean mShowOutdated = false;
 
     private static boolean checkClassExists(String className) {
@@ -97,7 +97,7 @@ public class StatusInstallerFragment extends Fragment {
                         DISABLE_FILE.createNewFile();
                         Snackbar.make(disableSwitch, R.string.xposed_off_next_reboot, Snackbar.LENGTH_LONG).show();
                     } catch (IOException e) {
-                        Log.e(XposedApp.TAG, "Could not create " + DISABLE_FILE, e);
+                        Log.e(FridaApp.TAG, "Could not create " + DISABLE_FILE, e);
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class StatusInstallerFragment extends Fragment {
         refreshKnownIssue(v);
 
         // Display warning dialog to new users
-        if (!XposedApp.getPreferences().getBoolean("hide_install_warning", false)) {
+        if (!FridaApp.getPreferences().getBoolean("hide_install_warning", false)) {
             new MaterialDialog.Builder(getActivity())
                     .title(R.string.install_warning_title)
                     .content(R.string.install_warning)
@@ -127,7 +127,7 @@ public class StatusInstallerFragment extends Fragment {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             if (dialog.isPromptCheckBoxChecked()) {
-                                XposedApp.getPreferences().edit().putBoolean("hide_install_warning", true).apply();
+                                FridaApp.getPreferences().edit().putBoolean("hide_install_warning", true).apply();
                             }
                         }
                     })
@@ -153,8 +153,8 @@ public class StatusInstallerFragment extends Fragment {
         View disableWrapper = v.findViewById(R.id.disableView);
 
         // TODO This should probably compare the full version string, not just the number part.
-        int active = XposedApp.getActiveXposedVersion();
-        int installed = XposedApp.getInstalledXposedVersion();
+        int active = FridaApp.getActiveXposedVersion();
+        int installed = FridaApp.getInstalledXposedVersion();
         if (installed < 0) {
             txtInstallError.setText(R.string.framework_not_installed);
             txtInstallError.setTextColor(getResources().getColor(R.color.warning));
@@ -162,12 +162,12 @@ public class StatusInstallerFragment extends Fragment {
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_error));
             disableWrapper.setVisibility(View.GONE);
         } else if (installed != active) {
-            txtInstallError.setText(getString(R.string.framework_not_active, XposedApp.getXposedProp().getVersion()));
+            txtInstallError.setText(getString(R.string.framework_not_active, FridaApp.getXposedProp().getVersion()));
             txtInstallError.setTextColor(getResources().getColor(R.color.amber_500));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.amber_500));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_warning));
         } else {
-            txtInstallError.setText(getString(R.string.framework_active, XposedApp.getXposedProp().getVersion()));
+            txtInstallError.setText(getString(R.string.framework_active, FridaApp.getXposedProp().getVersion()));
             txtInstallError.setTextColor(getResources().getColor(R.color.darker_green));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.darker_green));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle));
@@ -186,7 +186,7 @@ public class StatusInstallerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mShowOutdated = XposedApp.getPreferences().getBoolean("framework_download_show_outdated", false);
+        mShowOutdated = FridaApp.getPreferences().getBoolean("framework_download_show_outdated", false);
         setHasOptionsMenu(true);
     }
 
@@ -236,7 +236,7 @@ public class StatusInstallerFragment extends Fragment {
                                         rootUtil.execute("cmd package bg-dexopt-job", null);
 
                                         dialog.dismiss();
-                                        XposedApp.runOnUiThread(new Runnable() {
+                                        FridaApp.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 Toast.makeText(getActivity(), R.string.done, Toast.LENGTH_LONG).show();
@@ -250,7 +250,7 @@ public class StatusInstallerFragment extends Fragment {
 
             case R.id.show_outdated:
                 mShowOutdated = !item.isChecked();
-                XposedApp.getPreferences().edit().putBoolean("framework_download_show_outdated", mShowOutdated).apply();
+                FridaApp.getPreferences().edit().putBoolean("framework_download_show_outdated", mShowOutdated).apply();
                 item.setChecked(mShowOutdated);
                 refreshZipViews(getView());
                 return true;
@@ -272,7 +272,7 @@ public class StatusInstallerFragment extends Fragment {
         try {
             return file.getCanonicalFile();
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "Failed to get canonical file for " + file.getAbsolutePath(), e);
+            Log.e(FridaApp.TAG, "Failed to get canonical file for " + file.getAbsolutePath(), e);
             return file;
         }
     }
@@ -290,11 +290,11 @@ public class StatusInstallerFragment extends Fragment {
         final String issueName;
         final String issueLink;
         final ApplicationInfo appInfo = getActivity().getApplicationInfo();
-        final File baseDir = new File(XposedApp.BASE_DIR);
+        final File baseDir = new File(FridaApp.BASE_DIR);
         final File baseDirCanonical = getCanonicalFile(baseDir);
         final File baseDirActual = new File(Build.VERSION.SDK_INT >= 24 ? appInfo.deviceProtectedDataDir : appInfo.dataDir);
         final File baseDirActualCanonical = getCanonicalFile(baseDirActual);
-        final InstallZipUtil.XposedProp prop = XposedApp.getXposedProp();
+        final InstallZipUtil.FridaProp prop = FridaApp.getXposedProp();
         final Set<String> missingFeatures = prop != null ? prop.getMissingInstallerFeatures() : null;
 
         if (missingFeatures != null && !missingFeatures.isEmpty()) {
@@ -311,8 +311,8 @@ public class StatusInstallerFragment extends Fragment {
             issueName = "Samsung TouchWiz ROM";
             issueLink = "https://forum.xda-developers.com/showthread.php?t=3034811";
         } else if (!baseDirCanonical.equals(baseDirActualCanonical)) {
-            Log.e(XposedApp.TAG, "Base directory: " + getPathWithCanonicalPath(baseDir, baseDirCanonical));
-            Log.e(XposedApp.TAG, "Expected: " + getPathWithCanonicalPath(baseDirActual, baseDirActualCanonical));
+            Log.e(FridaApp.TAG, "Base directory: " + getPathWithCanonicalPath(baseDir, baseDirCanonical));
+            Log.e(FridaApp.TAG, "Expected: " + getPathWithCanonicalPath(baseDirActual, baseDirActualCanonical));
             issueName = getString(R.string.known_issue_wrong_base_directory, getPathWithCanonicalPath(baseDirActual, baseDirActualCanonical));
             issueLink = "https://github.com/rovo89/XposedInstaller/issues/395";
         } else if (!baseDir.exists()) {
@@ -402,7 +402,7 @@ public class StatusInstallerFragment extends Fragment {
                 v.findViewById(R.id.dmverity_row).setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Log.e(XposedApp.TAG, "Could not detect Verified Boot state", e);
+            Log.e(FridaApp.TAG, "Could not detect Verified Boot state", e);
         }
     }
 
@@ -600,7 +600,7 @@ public class StatusInstallerFragment extends Fragment {
     }
 
     private void refreshZipViewsOnUiThread() {
-        XposedApp.runOnUiThread(new Runnable() {
+        FridaApp.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 refreshZipViews(getView());

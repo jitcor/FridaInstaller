@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.github.ihbing.frida.installer.R;
 import com.github.ihbing.frida.installer.WelcomeActivity;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 
 public final class NotificationUtil {
     public static final int NOTIFICATION_MODULE_NOT_ACTIVATED_YET = 0;
@@ -31,7 +31,7 @@ public final class NotificationUtil {
             throw new IllegalStateException(
                     "NotificationUtil has already been initialized");
 
-        sContext = XposedApp.getInstance();
+        sContext = FridaApp.getInstance();
         sNotificationManager = (NotificationManager) sContext.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -163,7 +163,7 @@ public final class NotificationUtil {
 
             RootUtil rootUtil = new RootUtil();
             if (!rootUtil.startShell()) {
-                Log.e(XposedApp.TAG, "Could not start root shell");
+                Log.e(FridaApp.TAG, "Could not start root shell");
                 return;
             }
 

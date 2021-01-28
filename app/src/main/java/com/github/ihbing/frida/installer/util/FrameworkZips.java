@@ -32,17 +32,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.github.ihbing.frida.installer.R;
-import com.github.ihbing.frida.installer.XposedApp;
+import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.SyncDownloadInfo;
-import com.github.ihbing.frida.installer.util.InstallZipUtil.XposedProp;
+import com.github.ihbing.frida.installer.util.InstallZipUtil.FridaProp;
 import com.github.ihbing.frida.installer.util.InstallZipUtil.ZipCheckResult;
 
 public final class FrameworkZips {
     public static final String ARCH = getArch();
     public static final String SDK = Integer.toString(Build.VERSION.SDK_INT);
 
-    private static final File ONLINE_FILE = new File(XposedApp.getInstance().getCacheDir(), "framework.json");
-    private static final String ONLINE_URL = "http://dl-xda.xposed.info/framework.json";
+    private static final File ONLINE_FILE = new File(FridaApp.getInstance().getCacheDir(), "framework.json");
+//    private static final String ONLINE_URL = "http://dl-xda.xposed.info/framework.json";
+    private static final String ONLINE_URL = "https://raw.githubusercontent.com/ihbing/tool/master/frida/android/framework.json";
 
     public enum Type {
         INSTALLER(R.string.install_update, R.string.framework_install, R.string.framework_install_recovery),
@@ -112,7 +113,7 @@ public final class FrameworkZips {
         } catch (FileNotFoundException e) {
             return emptyMapArray();
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "Could not read " + ONLINE_FILE, e);
+            Log.e(FridaApp.TAG, "Could not read " + ONLINE_FILE, e);
             return emptyMapArray();
         }
 
@@ -132,7 +133,7 @@ public final class FrameworkZips {
 
             return zipsArray;
         } catch (JSONException e) {
-            Log.e(XposedApp.TAG, "Could not parse " + ONLINE_URL, e);
+            Log.e(FridaApp.TAG, "Could not parse " + ONLINE_URL, e);
             return emptyMapArray();
         }
     }
@@ -172,7 +173,7 @@ public final class FrameworkZips {
         } else if (typeString.equals("uninstaller")) {
             type = Type.UNINSTALLER;
         } else {
-            Log.w(XposedApp.TAG, "Unsupported framework zip type: " + typeString);
+            Log.w(FridaApp.TAG, "Unsupported framework zip type: " + typeString);
             return;
         }
         Map<String, OnlineFrameworkZip> zips = zipsArray[type.ordinal()];
@@ -362,9 +363,9 @@ public final class FrameworkZips {
             LocalFrameworkZip zip = new LocalFrameworkZip();
             ZipEntry entry;
             if ((entry = zipFile.getEntry("system/xposed.prop")) != null) {
-                XposedProp prop = InstallZipUtil.parseXposedProp(zipFile.getInputStream(entry));
+                FridaProp prop = InstallZipUtil.parseXposedProp(zipFile.getInputStream(entry));
                 if (prop == null || !prop.isCompatible()) {
-                    Log.w(XposedApp.TAG, "ZIP file is not compatible: " + file);
+                    Log.w(FridaApp.TAG, "ZIP file is not compatible: " + file);
                     return null;
                 }
                 zip.title = "Version " + prop.getVersion();
@@ -384,7 +385,7 @@ public final class FrameworkZips {
             zip.path = file;
             return zip;
         } catch (IOException e) {
-            Log.e(XposedApp.TAG, "Errors while checking " + file, e);
+            Log.e(FridaApp.TAG, "Errors while checking " + file, e);
             return null;
         } finally {
             if (zipFile != null) {
