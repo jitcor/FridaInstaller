@@ -2,7 +2,7 @@
   "zips": [
     {
       "title": "Version $(version)",
-      "url": "https://github.com/frida/frida/releases/download/{version}.0.0/frida-inject-{version}.0.0-android-{arch}.xz",
+      "url": "https://github.com/frida/frida/releases/download/$(version).0.0/frida-inject-$(version).0.0-android-$(arch).xz",
       "versions": [
         { "version": "14", "current": true },
         { "version": "12" }

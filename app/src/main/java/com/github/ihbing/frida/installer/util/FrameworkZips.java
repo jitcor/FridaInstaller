@@ -43,7 +43,8 @@ public final class FrameworkZips {
 
     private static final File ONLINE_FILE = new File(FridaApp.getInstance().getCacheDir(), "framework.json");
 //    private static final String ONLINE_URL = "http://dl-xda.xposed.info/framework.json";
-    private static final String ONLINE_URL = "https://raw.githubusercontent.com/ihbing/tool/master/frida/android/framework.json";
+//    private static final String ONLINE_URL = "https://raw.githubusercontent.com/ihbing/tool/master/frida/android/framework.json";
+    private static final String ONLINE_URL = "https://raw.githubusercontent.com/ihbing/FridaInstaller/master/app/res/framework.json";
 
     public enum Type {
         INSTALLER(R.string.install_update, R.string.framework_install, R.string.framework_install_recovery),
@@ -362,7 +363,7 @@ public final class FrameworkZips {
 
             LocalFrameworkZip zip = new LocalFrameworkZip();
             ZipEntry entry;
-            if ((entry = zipFile.getEntry("system/xposed.prop")) != null) {
+            if ((entry = zipFile.getEntry("system/frida.prop")) != null) {
                 FridaProp prop = InstallZipUtil.parseXposedProp(zipFile.getInputStream(entry));
                 if (prop == null || !prop.isCompatible()) {
                     Log.w(FridaApp.TAG, "ZIP file is not compatible: " + file);

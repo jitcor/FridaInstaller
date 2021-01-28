@@ -6,12 +6,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.CallSuper;
 
+import com.github.ihbing.frida.installer.BuildConfig;
 import com.github.ihbing.frida.installer.FridaApp;
 
 public abstract class OnlineLoader<T> extends Loader<T> {
     protected SharedPreferences mPref = FridaApp.getPreferences();
     protected String mPrefKeyLastUpdateCheck = CLASS_NAME + "_last_update_check";
-    protected int mUpdateFrequency = 24 * 60 * 60 * 1000;
+    protected int mUpdateFrequency = BuildConfig.DEBUG?1000:24 * 60 * 60 * 1000;
 
     private static final ConnectivityManager sConMgr
             = (ConnectivityManager) FridaApp.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
