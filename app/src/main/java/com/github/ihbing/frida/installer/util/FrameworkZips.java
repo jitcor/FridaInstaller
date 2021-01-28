@@ -252,7 +252,7 @@ public final class FrameworkZips {
         if (!zips.containsKey(title)) {
             OnlineFrameworkZip zip = new OnlineFrameworkZip();
             zip.title = title;
-            zip.url = replacePlaceholders(urlTemplate, attributes);
+            zip.url = Util.getRedirectUrl(replacePlaceholders(urlTemplate, attributes));
             zip.current = current;
             zip.type = type;
             zips.put(zip.title, zip);

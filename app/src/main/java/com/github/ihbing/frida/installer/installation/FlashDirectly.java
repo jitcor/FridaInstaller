@@ -29,6 +29,7 @@ public class FlashDirectly extends Flashable {
     }
 
     public void flash(Context context, FlashCallback callback) {
+
         ZipCheckResult zipCheck = openAndCheckZip(callback);
         if (zipCheck == null) {
             return;
