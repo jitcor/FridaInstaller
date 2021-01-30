@@ -20,4 +20,5 @@ public interface FlashCallback extends RootUtil.LineCallback {
     int ERROR_INVALID_ZIP = -100;
     int ERROR_NOT_FLASHABLE_IN_APP = -101;
     int ERROR_INSTALLER_NEEDS_UPDATE = -102;
+    int ERROR_COPY_FILE = -103;
 }

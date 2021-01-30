@@ -45,6 +45,8 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
             "/system/frida.prop",    // classical
     };
 
+    public static final String FRIDA_INJECT_BIN=BASE_DIR+"/frida_inject";
+
     public static int WRITE_EXTERNAL_PERMISSION = 69;
     private static FridaApp mInstance = null;
     private static Thread mUiThread;

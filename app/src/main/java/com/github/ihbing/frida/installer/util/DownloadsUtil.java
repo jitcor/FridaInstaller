@@ -555,6 +555,7 @@ public class DownloadsUtil {
             return new SyncDownloadInfo(SyncDownloadInfo.STATUS_SUCCESS, null);
 
         } catch (Throwable t) {
+            t.printStackTrace();
             return new SyncDownloadInfo(SyncDownloadInfo.STATUS_FAILED,
                     mApp.getString(R.string.repo_download_failed, url,
                             t.getMessage()));

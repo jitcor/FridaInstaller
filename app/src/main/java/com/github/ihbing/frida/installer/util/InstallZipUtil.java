@@ -111,7 +111,7 @@ public final class InstallZipUtil {
         }
 
         public boolean isArchCompatible() {
-            return FrameworkZips.ARCH.equals( mArch);
+            return FrameworkZips.ARCH.equals(mArch);
         }
 
         public boolean isSdkCompatible() {
@@ -188,7 +188,8 @@ public final class InstallZipUtil {
             case FlashCallback.ERROR_INSTALLER_NEEDS_UPDATE:
                 Resources res = context.getResources();
                 return res.getString(R.string.installer_needs_update, res.getString(R.string.app_name));
-
+            case FlashCallback.ERROR_COPY_FILE:
+                return "Copy file error";
             default:
                 return context.getString(R.string.flash_error_default, code);
         }

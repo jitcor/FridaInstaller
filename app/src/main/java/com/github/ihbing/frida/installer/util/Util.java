@@ -1,5 +1,6 @@
 package com.github.ihbing.frida.installer.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,5 +20,15 @@ public class Util {
             return url;
         }
 
+    }
+    public static void makeSureFileExist(File file){
+        if(file.exists())return;
+        if (file.getParentFile().mkdirs()){
+            try {
+                file.createNewFile();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 }

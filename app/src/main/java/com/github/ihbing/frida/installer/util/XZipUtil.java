@@ -132,9 +132,10 @@ public class XZipUtil {
      * @param delete 是否删除源文件
      * @throws IOException
      */
-    public static void deCompress(File file, boolean delete) throws IOException{
+    public static String deCompress(File file, boolean delete) throws IOException{
         FileInputStream fis = new FileInputStream(file);
-        FileOutputStream fos = new FileOutputStream(file.getPath().substring(0,file.getPath().length()-EXT.length()));
+        String out=file.getPath().substring(0,file.getPath().length()-EXT.length());
+        FileOutputStream fos = new FileOutputStream(out);
 
         deCompress(fis, fos);
 
@@ -145,6 +146,7 @@ public class XZipUtil {
         if (delete) {
             file.delete();
         }
+        return out;
     }
 
     /**

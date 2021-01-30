@@ -11,6 +11,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -206,119 +208,126 @@ public class InstallationActivity extends XposedBaseActivity {
         @Override
         public void onDone() {
             FridaApp.getInstance().reloadXposedProp();
-            try {
-                Thread.sleep(LONG_ANIM_TIME);
-            } catch (InterruptedException ignored) {
-            }
             FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    appendText("\n" + getString(R.string.file_done), TYPE_OK);
-
-                    // Fade in the result image.
-                    mConsoleResult.setImageResource(R.drawable.ic_check_circle);
-                    mConsoleResult.setVisibility(View.VISIBLE);
-                    ObjectAnimator fadeInResult = ObjectAnimator.ofFloat(mConsoleResult, "alpha", 0.0f, 0.03f);
-                    fadeInResult.setDuration(MEDIUM_ANIM_TIME * 2);
-
-                    // Collapse the whole bottom bar.
-                    View buttomBar = getView().findViewById(R.id.buttonPanel);
-                    Animator collapseBottomBar = createExpandCollapseAnimator(buttomBar, false);
-                    collapseBottomBar.setDuration(MEDIUM_ANIM_TIME);
-                    collapseBottomBar.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mProgress.setIndeterminate(false);
-                            mProgress.setRotation(180);
-                            mProgress.setMax(REBOOT_COUNTDOWN);
-                            mProgress.setProgress(REBOOT_COUNTDOWN);
-
-                            mBtnReboot.setVisibility(View.VISIBLE);
-                            mBtnCancel.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                    Animator expandBottomBar = createExpandCollapseAnimator(buttomBar, true);
-                    expandBottomBar.setDuration(MEDIUM_ANIM_TIME * 2);
-                    expandBottomBar.setStartDelay(LONG_ANIM_TIME * 4);
-
-                    final ObjectAnimator countdownProgress = ObjectAnimator.ofInt(mProgress, "progress", REBOOT_COUNTDOWN, 0);
-                    countdownProgress.setDuration(REBOOT_COUNTDOWN);
-                    countdownProgress.setInterpolator(new LinearInterpolator());
-
-                    final ValueAnimator countdownButton = ValueAnimator.ofInt(REBOOT_COUNTDOWN / 1000, 0);
-                    countdownButton.setDuration(REBOOT_COUNTDOWN);
-                    countdownButton.setInterpolator(new LinearInterpolator());
-
-                    final String format = getString(R.string.countdown);
-                    final RootUtil.RebootMode rebootMode = mFlashable.getRebootMode();
-                    final String action = getString(rebootMode.titleRes);
-                    mBtnReboot.setText(String.format(format, action, REBOOT_COUNTDOWN / 1000));
-
-                    countdownButton.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        private int minWidth = 0;
-
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            mBtnReboot.setText(String.format(format, action, animation.getAnimatedValue()));
-
-                            // Make sure that the button width doesn't shrink.
-                            if (mBtnReboot.getWidth() > minWidth) {
-                                minWidth = mBtnReboot.getWidth();
-                                mBtnReboot.setMinimumWidth(minWidth);
-                            }
-                        }
-                    });
-
-                    countdownButton.addListener(new AnimatorListenerAdapter() {
-                        private boolean canceled = false;
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                            canceled = true;
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (!canceled) {
-                                mBtnReboot.callOnClick();
-                            }
-                        }
-                    });
-
-                    mBtnReboot.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            countdownProgress.cancel();
-                            countdownButton.cancel();
-
-                            RootUtil rootUtil = new RootUtil();
-                            if (!rootUtil.startShell(InstallationFragment.this)
-                                    || !rootUtil.reboot(rebootMode, InstallationFragment.this)) {
-                                onError(FlashCallback.ERROR_GENERIC, getString(R.string.reboot_failed));
-                            }
-                        }
-                    });
-
-                    mBtnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            countdownProgress.cancel();
-                            countdownButton.cancel();
-
-                            getActivity().finish();
-                        }
-                    });
-
-                    AnimatorSet as = new AnimatorSet();
-                    as.play(fadeInResult);
-                    as.play(collapseBottomBar).with(fadeInResult);
-                    as.play(expandBottomBar).after(collapseBottomBar);
-                    as.play(countdownProgress).after(expandBottomBar);
-                    as.play(countdownButton).after(expandBottomBar);
-                    as.start();
+                    Toast.makeText(getActivity(), "Install success", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                 }
             });
+//            try {
+//                Thread.sleep(LONG_ANIM_TIME);
+//            } catch (InterruptedException ignored) {
+//            }
+//            FridaApp.postOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    appendText("\n" + getString(R.string.file_done), TYPE_OK);
+//
+//                    // Fade in the result image.
+//                    mConsoleResult.setImageResource(R.drawable.ic_check_circle);
+//                    mConsoleResult.setVisibility(View.VISIBLE);
+//                    ObjectAnimator fadeInResult = ObjectAnimator.ofFloat(mConsoleResult, "alpha", 0.0f, 0.03f);
+//                    fadeInResult.setDuration(MEDIUM_ANIM_TIME * 2);
+//
+//                    // Collapse the whole bottom bar.
+//                    View buttomBar = getView().findViewById(R.id.buttonPanel);
+//                    Animator collapseBottomBar = createExpandCollapseAnimator(buttomBar, false);
+//                    collapseBottomBar.setDuration(MEDIUM_ANIM_TIME);
+//                    collapseBottomBar.addListener(new AnimatorListenerAdapter() {
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            mProgress.setIndeterminate(false);
+//                            mProgress.setRotation(180);
+//                            mProgress.setMax(REBOOT_COUNTDOWN);
+//                            mProgress.setProgress(REBOOT_COUNTDOWN);
+//
+//                            mBtnReboot.setVisibility(View.VISIBLE);
+//                            mBtnCancel.setVisibility(View.VISIBLE);
+//                        }
+//                    });
+//
+//                    Animator expandBottomBar = createExpandCollapseAnimator(buttomBar, true);
+//                    expandBottomBar.setDuration(MEDIUM_ANIM_TIME * 2);
+//                    expandBottomBar.setStartDelay(LONG_ANIM_TIME * 4);
+//
+//                    final ObjectAnimator countdownProgress = ObjectAnimator.ofInt(mProgress, "progress", REBOOT_COUNTDOWN, 0);
+//                    countdownProgress.setDuration(REBOOT_COUNTDOWN);
+//                    countdownProgress.setInterpolator(new LinearInterpolator());
+//
+//                    final ValueAnimator countdownButton = ValueAnimator.ofInt(REBOOT_COUNTDOWN / 1000, 0);
+//                    countdownButton.setDuration(REBOOT_COUNTDOWN);
+//                    countdownButton.setInterpolator(new LinearInterpolator());
+//
+//                    final String format = getString(R.string.countdown);
+//                    final RootUtil.RebootMode rebootMode = mFlashable.getRebootMode();
+//                    final String action = getString(rebootMode.titleRes);
+//                    mBtnReboot.setText(String.format(format, action, REBOOT_COUNTDOWN / 1000));
+//
+//                    countdownButton.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                        private int minWidth = 0;
+//
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator animation) {
+//                            mBtnReboot.setText(String.format(format, action, animation.getAnimatedValue()));
+//
+//                            // Make sure that the button width doesn't shrink.
+//                            if (mBtnReboot.getWidth() > minWidth) {
+//                                minWidth = mBtnReboot.getWidth();
+//                                mBtnReboot.setMinimumWidth(minWidth);
+//                            }
+//                        }
+//                    });
+//
+//                    countdownButton.addListener(new AnimatorListenerAdapter() {
+//                        private boolean canceled = false;
+//
+//                        @Override
+//                        public void onAnimationCancel(Animator animation) {
+//                            canceled = true;
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            if (!canceled) {
+//                                mBtnReboot.callOnClick();
+//                            }
+//                        }
+//                    });
+//
+//                    mBtnReboot.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            countdownProgress.cancel();
+//                            countdownButton.cancel();
+//
+//                            RootUtil rootUtil = new RootUtil();
+//                            if (!rootUtil.startShell(InstallationFragment.this)
+//                                    || !rootUtil.reboot(rebootMode, InstallationFragment.this)) {
+//                                onError(FlashCallback.ERROR_GENERIC, getString(R.string.reboot_failed));
+//                            }
+//                        }
+//                    });
+//
+//                    mBtnCancel.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            countdownProgress.cancel();
+//                            countdownButton.cancel();
+//
+//                            getActivity().finish();
+//                        }
+//                    });
+//
+//                    AnimatorSet as = new AnimatorSet();
+//                    as.play(fadeInResult);
+//                    as.play(collapseBottomBar).with(fadeInResult);
+//                    as.play(expandBottomBar).after(collapseBottomBar);
+//                    as.play(countdownProgress).after(expandBottomBar);
+//                    as.play(countdownButton).after(expandBottomBar);
+//                    as.start();
+//                }
+//            });
         }
 
         @Override

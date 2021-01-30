@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -441,9 +442,9 @@ public final class FrameworkZips {
             switch (info.status) {
                 case SyncDownloadInfo.STATUS_NOT_MODIFIED:
                     return false;
-
                 case SyncDownloadInfo.STATUS_FAILED:
                     onClear();
+                    Log.e(FridaApp.TAG,info.errorMessage);
                     return true;
 
                 case SyncDownloadInfo.STATUS_SUCCESS:

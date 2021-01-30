@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 public class AssetUtil {
     public static final File BUSYBOX_FILE = new File(FridaApp.getInstance().getCacheDir(), "busybox-xposed");
+    public static final File ACTIVE_JS_FILE = new File(FridaApp.getInstance().getCacheDir(), "active.js");
 
     @SuppressWarnings("deprecation")
     public static String getBinariesFolder() {
@@ -62,6 +63,10 @@ public class AssetUtil {
 
         AssetManager assets = null;
         writeAssetToFile(assets, getBinariesFolder() + "busybox-xposed", BUSYBOX_FILE, 00700);
+    }
+    public synchronized static void extractActiveJs() {
+        AssetManager assets = null;
+        writeAssetToFile(assets, "frida/active.js", ACTIVE_JS_FILE, 00700);
     }
 
     public synchronized static void removeBusybox() {
