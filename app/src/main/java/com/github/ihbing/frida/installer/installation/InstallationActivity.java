@@ -11,7 +11,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -33,7 +31,6 @@ import java.io.File;
 import com.github.ihbing.frida.installer.R;
 import com.github.ihbing.frida.installer.FridaApp;
 import com.github.ihbing.frida.installer.XposedBaseActivity;
-import com.github.ihbing.frida.installer.util.RootUtil;
 
 public class InstallationActivity extends XposedBaseActivity {
     private static final int REBOOT_COUNTDOWN = 15000;
@@ -207,7 +204,7 @@ public class InstallationActivity extends XposedBaseActivity {
 
         @Override
         public void onDone() {
-            FridaApp.getInstance().reloadXposedProp();
+            FridaApp.getInstance().reloadFridaProp();
             FridaApp.postOnUiThread(new Runnable() {
                 @Override
                 public void run() {

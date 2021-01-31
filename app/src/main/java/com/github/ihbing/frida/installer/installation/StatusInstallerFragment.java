@@ -38,6 +38,7 @@ import java.util.Set;
 
 import com.github.ihbing.frida.installer.R;
 import com.github.ihbing.frida.installer.FridaApp;
+import com.github.ihbing.frida.installer.WelcomeActivity;
 import com.github.ihbing.frida.installer.util.DownloadsUtil;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadFinishedCallback;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadInfo;
@@ -144,6 +145,7 @@ public class StatusInstallerFragment extends Fragment {
         super.onResume();
         refreshInstallStatus();
     }
+
 
     private void refreshInstallStatus() {
         View v = getView();

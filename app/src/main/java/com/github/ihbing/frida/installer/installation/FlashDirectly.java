@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.os.FileUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.File;
@@ -96,15 +97,10 @@ public class FlashDirectly extends Flashable {
             return;
         }
         AssetUtil.extractActiveJs();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String cmd=FridaApp.FRIDA_INJECT_BIN+"  -n "+ BuildConfig.APPLICATION_ID+" -s " + AssetUtil.ACTIVE_JS_FILE;
-                Log.i(FridaApp.TAG,"cmd:"+cmd);
-                rootUtil.execute(cmd, callback);
-
-            }
-        }).start();
+        String cmd=FridaApp.FRIDA_INJECT_BIN+"  -n "+ BuildConfig.APPLICATION_ID+" -s " + AssetUtil.ACTIVE_JS_FILE+" &";
+        Log.i(FridaApp.TAG,"cmd:"+cmd);
+        rootUtil.execute(cmd, callback);
+        SystemClock.sleep(1000);//Wait Frida inject active.js success
         callback.onDone();
     }
 

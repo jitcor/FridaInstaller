@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -365,7 +364,7 @@ public final class FrameworkZips {
             LocalFrameworkZip zip = new LocalFrameworkZip();
             ZipEntry entry;
             if ((entry = zipFile.getEntry("system/frida.prop")) != null) {
-                FridaProp prop = InstallZipUtil.parseXposedProp(zipFile.getInputStream(entry));
+                FridaProp prop = InstallZipUtil.parseFridaProp(zipFile.getInputStream(entry));
                 if (prop == null || !prop.isCompatible()) {
                     Log.w(FridaApp.TAG, "ZIP file is not compatible: " + file);
                     return null;

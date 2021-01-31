@@ -10,4 +10,6 @@ public class FridaUtil {
     public static void downloadFridaServer(){
 
     }
+    //cmd::/data/user_de/0/com.github.ihbing.frida.installer/frida_inject  -n com.github.ihbing.frida.installer -s /data/user/0/com.github.ihbing.frida.installer/cache/active.js
+
 }

@@ -40,9 +40,10 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
 
     public static final String ENABLED_MODULES_LIST_FILE = FridaApp.BASE_DIR + "conf/enabled_modules.list";
 
-    private static final String[] XPOSED_PROP_FILES = new String[]{
-            "/su/frida/frida.prop", // official systemless
-            "/system/frida.prop",    // classical
+    private static final String[] Frida_PROP_FILES = new String[]{
+//            "/su/frida/frida.prop", // official systemless
+//            "/system/frida.prop",    // classical
+            FridaApp.BASE_DIR + "conf/frida.prop",
     };
 
     public static final String FRIDA_INJECT_BIN=BASE_DIR+"/frida_inject";
@@ -117,7 +118,7 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
         mMainHandler = new Handler();
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        reloadXposedProp();
+        reloadFridaProp();
         createDirectories();
         NotificationUtil.init();
         AssetUtil.removeBusybox();
@@ -148,16 +149,16 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
         FileUtils.setPermissions(dir, permissions, -1, -1);
     }
 
-    public void reloadXposedProp() {
+    public void reloadFridaProp() {
         FridaProp prop = null;
 
-        for (String path : XPOSED_PROP_FILES) {
+        for (String path : Frida_PROP_FILES) {
             File file = new File(path);
             if (file.canRead()) {
                 FileInputStream is = null;
                 try {
                     is = new FileInputStream(file);
-                    prop = InstallZipUtil.parseXposedProp(is);
+                    prop = InstallZipUtil.parseFridaProp(is);
                     break;
                 } catch (IOException e) {
                     Log.e(FridaApp.TAG, "Could not read " + file.getPath(), e);

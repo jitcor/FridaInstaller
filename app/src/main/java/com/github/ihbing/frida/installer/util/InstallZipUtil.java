@@ -77,7 +77,7 @@ public final class InstallZipUtil {
         ZipEntry xposedPropEntry = zip.getEntry("system/frida.prop");
         if (xposedPropEntry != null) {
             try {
-                result.mFridaProp = parseXposedProp(zip.getInputStream(xposedPropEntry));
+                result.mFridaProp = parseFridaProp(zip.getInputStream(xposedPropEntry));
             } catch (IOException e) {
                 Log.e(FridaApp.TAG, "Failed to read system/xposed.prop from " + zip.getName(), e);
             }
@@ -129,7 +129,7 @@ public final class InstallZipUtil {
         }
     }
 
-    public static FridaProp parseXposedProp(InputStream is) throws IOException {
+    public static FridaProp parseFridaProp(InputStream is) throws IOException {
         FridaProp prop = new FridaProp();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
