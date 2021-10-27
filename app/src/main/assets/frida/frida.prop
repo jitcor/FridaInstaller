@@ -1,0 +1,4 @@
+version=14
+minsdk=19
+maxsdk=28
+arch=arm64

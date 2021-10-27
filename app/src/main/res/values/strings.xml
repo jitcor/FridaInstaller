@@ -41,9 +41,9 @@
     <string name="installer_needs_update">%1$s needs to be updated</string>
     <string name="known_issue_wrong_base_directory">wrong base directory: %1$s</string>
     <string name="known_issue_missing_base_directory">missing base directory</string>
-    <string name="framework_active">Xposed Framework version %s is active.</string>
-    <string name="framework_not_active">Xposed Framework version %s is installed, but not active. Please check the logs for details.</string>
-    <string name="framework_not_installed">Xposed Framework is not installed.</string>
+    <string name="framework_active">Frida Framework version %s is active.</string>
+    <string name="framework_not_active">Frida Framework version %s is installed, but not active. Please check the logs for details.</string>
+    <string name="framework_not_installed">Frida Framework is not installed.</string>
     <string name="countdown">%1$s (%2$d)</string>
     <string name="flash_error_timeout">Timeout occurred</string>
     <string name="flash_error_shell_died">Execution aborted unexpectedly</string>
@@ -51,8 +51,8 @@
     <string name="flash_error_not_flashable_in_app">This file can only be flashed via recovery.</string>
     <string name="flash_error_default">Error %d occurred</string>
     <string name="status">Frida Status</string>
-    <string name="xposed_on_next_reboot">Xposed Framework will be enabled on next reboot</string>
-    <string name="xposed_off_next_reboot">Xposed Framework will be disabled on next reboot</string>
+    <string name="xposed_on_next_reboot">Frida Framework will be enabled on next reboot</string>
+    <string name="xposed_off_next_reboot">Frida Framework will be disabled on next reboot</string>
     <string name="show_outdated">Show outdated versions</string>
     <string name="framework_device_info">Your device</string>
     <string name="framework_install">Install</string>

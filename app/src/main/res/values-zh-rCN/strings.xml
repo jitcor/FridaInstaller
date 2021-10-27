@@ -32,10 +32,10 @@
     <string name="reboot_confirmation">您现在要重启设备吗？</string>
     <string name="install_warning_title">小心！</string>
     <string name="dont_show_again">不要再显示这个</string>
-    <string name="install_known_issue">Xposed 与您的 ROM 似乎存在已知的问题（“%s”）。安装 Xposed 可能无法工作或引发严重问题。点击此处获知问题详情。</string>
-    <string name="framework_active">Xposed 框架 %s 版已激活。</string>
-    <string name="framework_not_active">Xposed 框架 %s 版已安装，但未激活。请检查日志的详细信息。</string>
-    <string name="framework_not_installed">Xposed 框架未安装。</string>
+    <string name="install_known_issue">Frida 与您的 ROM 似乎存在已知的问题（“%s”）。安装 Frida 可能无法工作或引发严重问题。点击此处获知问题详情。</string>
+    <string name="framework_active">Frida 框架 %s 版已激活。</string>
+    <string name="framework_not_active">Frida 框架 %s 版已安装，但未激活。请检查日志的详细信息。</string>
+    <string name="framework_not_installed">Frida 框架未安装。</string>
 
     <!-- File operations -->
     <string name="file_copying">正在复制 %s…</string>

@@ -121,8 +121,8 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        installedXposedVersion = FridaApp.getInstalledXposedVersion();
-        if (installedXposedVersion < 0 || FridaApp.getActiveXposedVersion() < 0 || StatusInstallerFragment.DISABLE_FILE.exists()) {
+        installedXposedVersion = FridaApp.getInstalledFridaVersion();
+        if (installedXposedVersion < 0 || !FridaApp.checkFridaActive() || StatusInstallerFragment.DISABLE_FILE.exists()) {
             View notActiveNote = getActivity().getLayoutInflater().inflate(com.github.ihbing.frida.installer.R.layout.xposed_not_active_note, getListView(), false);
             if (installedXposedVersion < 0) {
                 ((TextView) notActiveNote.findViewById(android.R.id.title)).setText(com.github.ihbing.frida.installer.R.string.framework_not_installed);

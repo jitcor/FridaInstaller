@@ -38,7 +38,6 @@ import java.util.Set;
 
 import com.github.ihbing.frida.installer.R;
 import com.github.ihbing.frida.installer.FridaApp;
-import com.github.ihbing.frida.installer.WelcomeActivity;
 import com.github.ihbing.frida.installer.util.DownloadsUtil;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadFinishedCallback;
 import com.github.ihbing.frida.installer.util.DownloadsUtil.DownloadInfo;
@@ -85,7 +84,7 @@ public class StatusInstallerFragment extends Fragment {
         refreshZipViews(v);
 
         // Disable switch
-        final SwitchCompat disableSwitch = (SwitchCompat) v.findViewById(R.id.disableSwitch);
+        final SwitchCompat disableSwitch = v.findViewById(R.id.disableSwitch);
         disableSwitch.setChecked(!DISABLE_FILE.exists());
         disableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -155,21 +154,21 @@ public class StatusInstallerFragment extends Fragment {
         View disableWrapper = v.findViewById(R.id.disableView);
 
         // TODO This should probably compare the full version string, not just the number part.
-        int active = FridaApp.getActiveXposedVersion();
-        int installed = FridaApp.getInstalledXposedVersion();
+        boolean active = FridaApp.checkFridaActive();
+        int installed = FridaApp.getInstalledFridaVersion();
         if (installed < 0) {
             txtInstallError.setText(R.string.framework_not_installed);
             txtInstallError.setTextColor(getResources().getColor(R.color.warning));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.warning));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_error));
             disableWrapper.setVisibility(View.GONE);
-        } else if (installed != active) {
-            txtInstallError.setText(getString(R.string.framework_not_active, FridaApp.getXposedProp().getVersion()));
+        } else if (!active) {
+            txtInstallError.setText(getString(R.string.framework_not_active, FridaApp.getFridaProp().getVersion()));
             txtInstallError.setTextColor(getResources().getColor(R.color.amber_500));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.amber_500));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_warning));
         } else {
-            txtInstallError.setText(getString(R.string.framework_active, FridaApp.getXposedProp().getVersion()));
+            txtInstallError.setText(getString(R.string.framework_active, FridaApp.getFridaProp().getVersion()));
             txtInstallError.setTextColor(getResources().getColor(R.color.darker_green));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.darker_green));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle));
@@ -296,7 +295,7 @@ public class StatusInstallerFragment extends Fragment {
         final File baseDirCanonical = getCanonicalFile(baseDir);
         final File baseDirActual = new File(Build.VERSION.SDK_INT >= 24 ? appInfo.deviceProtectedDataDir : appInfo.dataDir);
         final File baseDirActualCanonical = getCanonicalFile(baseDirActual);
-        final InstallZipUtil.FridaProp prop = FridaApp.getXposedProp();
+        final InstallZipUtil.FridaProp prop = FridaApp.getFridaProp();
         final Set<String> missingFeatures = prop != null ? prop.getMissingInstallerFeatures() : null;
 
         if (missingFeatures != null && !missingFeatures.isEmpty()) {

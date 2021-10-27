@@ -97,6 +97,8 @@ public class FlashDirectly extends Flashable {
             return;
         }
         AssetUtil.extractActiveJs();
+
+        FridaApp.getInstance().reloadFridaProp();
         String cmd=FridaApp.FRIDA_INJECT_BIN+"  -n "+ BuildConfig.APPLICATION_ID+" -s " + AssetUtil.ACTIVE_JS_FILE+" &";
         Log.i(FridaApp.TAG,"cmd:"+cmd);
         rootUtil.execute(cmd, callback);

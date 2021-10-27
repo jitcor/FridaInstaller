@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.Keep;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import com.github.ihbing.frida.installer.util.AssetUtil;
 import com.github.ihbing.frida.installer.util.DownloadsUtil;
@@ -45,7 +47,6 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
 //            "/system/frida.prop",    // classical
             FridaApp.BASE_DIR + "conf/frida.prop",
     };
-
     public static final String FRIDA_INJECT_BIN=BASE_DIR+"/frida_inject";
 
     public static int WRITE_EXTERNAL_PERMISSION = 69;
@@ -73,16 +74,17 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
     }
 
     // This method is hooked by XposedBridge to return the current version
-    public static int getActiveXposedVersion() {
-        return -1;
+    @Keep
+    public static boolean checkFridaActive() {
+        return false;
     }
 
-    public static int getInstalledXposedVersion() {
-        FridaProp prop = getXposedProp();
+    public static int getInstalledFridaVersion() {
+        FridaProp prop = getFridaProp();
         return prop != null ? prop.getVersionInt() : -1;
     }
 
-    public static FridaProp getXposedProp() {
+    public static FridaProp getFridaProp() {
         synchronized (mInstance) {
             return mInstance.mFridaProp;
         }
@@ -150,6 +152,7 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
     }
 
     public void reloadFridaProp() {
+        Log.i(FridaApp.TAG,"reloadFridaProp");
         FridaProp prop = null;
 
         for (String path : Frida_PROP_FILES) {
@@ -159,6 +162,7 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
                 try {
                     is = new FileInputStream(file);
                     prop = InstallZipUtil.parseFridaProp(is);
+                    Log.d(FridaApp.TAG,"reloadFridaProp success");
                     break;
                 } catch (IOException e) {
                     Log.e(FridaApp.TAG, "Could not read " + file.getPath(), e);

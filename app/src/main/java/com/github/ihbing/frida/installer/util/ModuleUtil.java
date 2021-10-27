@@ -199,7 +199,7 @@ public final class ModuleUtil {
     public synchronized void updateModulesList(boolean showToast) {
         try {
             Log.i(FridaApp.TAG, "updating modules.list");
-            int installedXposedVersion = FridaApp.getInstalledXposedVersion();
+            int installedXposedVersion = FridaApp.getInstalledFridaVersion();
 
             PrintWriter modulesList = new PrintWriter(MODULES_LIST_FILE);
             PrintWriter enabledModulesList = new PrintWriter(FridaApp.ENABLED_MODULES_LIST_FILE);
