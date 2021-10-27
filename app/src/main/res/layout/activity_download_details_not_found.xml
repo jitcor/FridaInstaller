@@ -6,7 +6,7 @@
               android:gravity="center"
               android:orientation="vertical"
               android:padding="8dp"
-              tools:context="com.github.ihbing.frida.installer.DownloadDetailsActivity">
+              tools:context="com.github.humenger.frida.installer.DownloadDetailsActivity">
 
     <ImageView
         android:layout_width="wrap_content"
