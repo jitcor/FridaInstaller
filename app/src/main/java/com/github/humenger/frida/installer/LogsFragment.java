@@ -174,7 +174,7 @@ public class LogsFragment extends Fragment {
     }
 
     private void send() {
-        Uri uri = FileProvider.getUriForFile(getActivity(), "de.robv.android.xposed.installer.fileprovider", mFileErrorLog);
+        Uri uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID+".fileprovider", mFileErrorLog);
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -218,7 +218,7 @@ public class LogsFragment extends Fragment {
 
         Calendar now = Calendar.getInstance();
         String filename = String.format(
-                "xposed_%s_%04d%02d%02d_%02d%02d%02d.log", "error",
+                "frida_%s_%04d%02d%02d_%02d%02d%02d.log", "error",
                 now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1,
                 now.get(Calendar.DAY_OF_MONTH), now.get(Calendar.HOUR_OF_DAY),
                 now.get(Calendar.MINUTE), now.get(Calendar.SECOND));

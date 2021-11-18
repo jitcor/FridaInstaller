@@ -2,32 +2,61 @@ package com.github.humenger.frida.installer.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Util {
     public static final String TAG = "Util";
+
+    public static String ToString(InputStream inputStream) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Util.ioCopy(inputStream, out);
+        return new String(out.toByteArray());
+    }
+
+    public static boolean ioCopy(InputStream inputStream, OutputStream outputStream) {
+        byte[] buf = new byte[1024];
+        int n = 0;
+        try {
+            while ((n = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, n);
+                outputStream.flush();
+            }
+            inputStream.close();
+            outputStream.close();
+            return true;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * 获取重定向地址
      */
     public static String getRedirectUrl(String url) {
-        try{
+        try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setInstanceFollowRedirects(false);
             conn.setConnectTimeout(5000);
             return conn.getHeaderField("Location");
-        }catch (IOException e){
+        } catch (IOException e) {
             return url;
         }
 
     }
-    public static void makeSureFileExist(File file){
-        if(file.exists())return;
-        if (file.getParentFile().mkdirs()){
+
+    public static void makeSureFileExist(File file) {
+        if (file.exists()) return;
+        if (file.getParentFile().mkdirs()) {
             try {
                 file.createNewFile();
             } catch (IOException ioException) {
@@ -35,10 +64,11 @@ public class Util {
             }
         }
     }
+
     /**
      * 将字符串写入指定文件(当指定的父路径中文件夹不存在时，会最大限度去创建，以保证保存成功！)
      *
-     * @param res  原字符串
+     * @param res      原字符串
      * @param filePath 文件路径
      * @return 成功标记
      */

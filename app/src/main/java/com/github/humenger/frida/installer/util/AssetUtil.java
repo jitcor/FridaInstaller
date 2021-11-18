@@ -15,6 +15,7 @@ import java.io.InputStream;
 public class AssetUtil {
     public static final File BUSYBOX_FILE = new File(FridaApp.getInstance().getCacheDir(), "busybox-xposed");
     public static final File ACTIVE_JS_FILE = new File(FridaApp.getInstance().getCacheDir(), "active.js");
+    public static final File TEMPLATE_JS_FILE = new File(FridaApp.getInstance().getCacheDir(), "template.js");
     public static final File FRIDA_PROP_FILE = new File(FridaApp.BASE_DIR + "conf/frida.prop");
 
     @SuppressWarnings("deprecation")

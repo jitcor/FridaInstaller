@@ -47,6 +47,7 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
             FridaApp.BASE_DIR + "conf/frida.prop",
     };
     public static final String FRIDA_INJECT_BIN=BASE_DIR+"/frida_inject";
+    public static final String SCRIPTS_DIR =Environment.getExternalStorageDirectory().getAbsolutePath()+"/FridaInstaller/frida_scripts/";
 
     public static int WRITE_EXTERNAL_PERMISSION = 69;
     private static FridaApp mInstance = null;
@@ -55,11 +56,9 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
     private boolean mIsUiLoaded = false;
     private SharedPreferences mPref;
     private FridaProp mFridaProp;
-
     public static FridaApp getInstance() {
         return mInstance;
     }
-
     public static void runOnUiThread(Runnable action) {
         if (Thread.currentThread() != mUiThread) {
             mMainHandler.post(action);

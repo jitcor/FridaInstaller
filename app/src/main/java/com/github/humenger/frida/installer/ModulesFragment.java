@@ -1,22 +1,28 @@
 package com.github.humenger.frida.installer;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.ActivityNotFoundException;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -32,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +48,7 @@ import com.github.humenger.frida.installer.installation.StatusInstallerFragment;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +58,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,6 +80,7 @@ import com.github.humenger.frida.installer.util.ModuleUtil.ModuleListener;
 import com.github.humenger.frida.installer.util.NavUtil;
 import com.github.humenger.frida.installer.util.RepoLoader;
 import com.github.humenger.frida.installer.util.ThemeUtil;
+import com.github.humenger.frida.installer.util.Util;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static com.github.humenger.frida.installer.FridaApp.WRITE_EXTERNAL_PERMISSION;
@@ -157,7 +168,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO maybe enable again after checking the implementation
-        //inflater.inflate(R.menu.menu_modules, menu);
+        inflater.inflate(R.menu.menu_modules, menu);
     }
 
     @Override
@@ -182,6 +193,17 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.import_script_from_clipboard:
+                importScript(fromClipboard());
+                return true;
+            case R.id.import_script_from_local:
+                importScript(fromLocal());
+                return true;
+            case R.id.create_script:
+                createScript();
+                return true;
+        }
         if (item.getItemId() == com.github.humenger.frida.installer.R.id.bookmarks) {
             startActivity(new Intent(getActivity(), ModulesBookmark.class));
             return true;
@@ -272,6 +294,95 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
                 return importModules(enabledModulesPath);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createScript() {
+        //FridaInstaller/modules/xxxx.js
+        final EditText editText = new EditText(getActivity());
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle("输入脚本名")
+                .setView(editText)
+                .setPositiveButton("编辑脚本", null)
+                .setNegativeButton("取消", null).create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = editText.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(getActivity(), "请输入脚本名", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                File jsFile = new File(FridaApp.SCRIPTS_DIR, name + ".js");
+                File configFile = new File(FridaApp.SCRIPTS_DIR, name + ".config");
+                Util.makeSureFileExist(jsFile);
+                try {
+                    Util.ioCopy(getActivity().getAssets().open("gadget/template.js"), new FileOutputStream(jsFile));
+                    Util.ioCopy(getActivity().getAssets().open("gadget/template.config"), new FileOutputStream(configFile));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                try {
+                    Intent intent = new Intent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //设置intent的Action属性
+                    intent.setAction(Intent.ACTION_VIEW);
+                    //获取文件file的MIME类型
+                    String type = "text/js";
+                    //设置intent的data和Type属性。
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setDataAndType(/*uri*/FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID+".fileprovider", jsFile), type);
+                    }else {
+                        intent.setDataAndType(/*uri*/Uri.fromFile(jsFile), type);
+                    }
+                    startActivity(intent);
+//                    startActivity(Intent.createChooser(intent, getResources().getString(com.github.humenger.frida.installer.R.string.menuSend)));
+                } catch (ActivityNotFoundException e) {
+                    // TODO: handle exception
+                    Toast.makeText(getActivity(), "sorry", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
+
+
+    }
+    private InputStream buildJsModule(InputStream inputStream,String name,String processName){
+        String js = Util.ToString(inputStream);
+        if(!TextUtils.isEmpty(js)){
+            js=js.replaceFirst("\\{NewUserScript\\}",name);
+            js=js.replaceFirst("\\{ProcessName\\}",processName);
+        }
+        return new ByteArrayInputStream(js.getBytes());
+    }
+    private void importScript(Reader reader) {
+        if (reader == null) return;
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String line = null;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    private Reader fromClipboard() {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null && clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
+            String s = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+            return new StringReader(s);
+        }
+        return null;
+    }
+
+    private Reader fromLocal() {
+
+        return null;
     }
 
     private boolean checkPermissions() {

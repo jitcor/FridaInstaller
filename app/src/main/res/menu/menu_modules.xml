@@ -3,12 +3,16 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:visible="false"
+        android:enabled="false"
         android:id="@+id/bookmarks"
         android:icon="@drawable/ic_bookmark"
         android:title="@string/bookmarks"
         app:showAsAction="ifRoom"/>
 
     <item
+        android:visible="false"
+        android:enabled="false"
         android:id="@+id/export"
         android:title="@string/export_"
         app:showAsAction="never">
@@ -25,6 +29,8 @@
     </item>
 
     <item
+        android:visible="false"
+        android:enabled="false"
         android:id="@+id/import_"
         android:title="@string/import_"
         app:showAsAction="never">
@@ -39,5 +45,25 @@
                 app:showAsAction="never"/>
         </menu>
     </item>
-
+    <item
+        android:title="新建脚本"
+        app:showAsAction="never"
+        android:id="@+id/create_script"/>
+    <item
+        android:title="导入脚本"
+        android:id="@+id/import_script"
+        app:showAsAction="never" >
+        <menu>
+            <item
+                android:id="@+id/import_script_from_local"
+                app:showAsAction="never"
+                android:title="从本地导入"
+                />
+            <item
+                android:id="@+id/import_script_from_clipboard"
+                app:showAsAction="never"
+                android:title="从剪切板导入"
+                />
+        </menu>
+    </item>
 </menu>

@@ -196,6 +196,7 @@ public class WelcomeActivity extends XposedBaseActivity implements NavigationVie
 
     @Override
     protected void onStart() {
+        System.out.println("outout:"+FridaApp.checkFridaActive());
         super.onStart();
     }
 

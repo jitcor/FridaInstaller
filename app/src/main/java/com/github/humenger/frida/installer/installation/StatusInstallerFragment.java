@@ -1,6 +1,7 @@
 package com.github.humenger.frida.installer.installation;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import com.github.humenger.frida.installer.HuDebug;
 import com.github.humenger.frida.installer.R;
 import com.github.humenger.frida.installer.FridaApp;
 import com.github.humenger.frida.installer.util.DownloadsUtil;
@@ -123,19 +126,22 @@ public class StatusInstallerFragment extends Fragment {
                     .title(R.string.install_warning_title)
                     .content(R.string.install_warning)
                     .positiveText(android.R.string.ok)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if (dialog.isPromptCheckBoxChecked()) {
-                                FridaApp.getPreferences().edit().putBoolean("hide_install_warning", true).apply();
-                            }
+                    .onPositive((dialog, which) -> {
+                        if (dialog.isPromptCheckBoxChecked()) {
+                            FridaApp.getPreferences().edit().putBoolean("hide_install_warning", true).apply();
                         }
                     })
                     .checkBoxPromptRes(R.string.dont_show_again, false, null)
                     .cancelable(false)
                     .show();
         }
-
+        HuDebug.invertCode(false, ()->{
+           new AlertDialog.Builder(getActivity())
+                    .setTitle("Hook tips")
+                    .setMessage("Hook success")
+                    .setPositiveButton("OK", null)
+                    .show();
+        });
         return v;
     }
 
