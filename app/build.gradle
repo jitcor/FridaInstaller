@@ -4,12 +4,12 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.github.humenger.frida.installer"
+        applicationId "com.github.h.f.installer"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0.0"
-        archivesBaseName = "FridaInstaller_${versionName}".replace(' ', '_')
+        archivesBaseName = "FInstaller_${versionName}".replace(' ', '_')
     }
 
     buildTypes {

@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.github.humenger.frida.installer.widget.ListPreferenceSummaryFix
+    <com.github.h.f.installer.widget.ListPreferenceSummaryFix
         android:defaultValue=""
         android:entries="@array/module_release_type_texts"
         android:entryValues="@array/module_release_type_values"

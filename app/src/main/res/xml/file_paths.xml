@@ -2,6 +2,6 @@
 <paths>
     <external-cache-path name="downloads" path="downloads"/>
     <external-path name="FridaInstaller" path="."/>
-    <root-path name="log_legacy" path="/data/data/com.github.humenger.frida.installer/log" />
-    <root-path name="log" path="/data/user_de/0/com.github.humenger.frida.installer/log" />
+    <root-path name="log_legacy" path="/data/data/com.github.h.f.installer/log" />
+    <root-path name="log" path="/data/user_de/0/com.github.h.f.installer/log" />
 </paths>

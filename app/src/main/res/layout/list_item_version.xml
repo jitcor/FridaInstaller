@@ -77,7 +77,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.github.humenger.frida.installer.widget.DownloadView
+        <com.github.h.f.installer.widget.DownloadView
             android:id="@+id/downloadView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -1,6 +1,6 @@
 Java.perform(function () {
 
-    function tryCode(enable: boolean, func: () => void) {
+    function tryCode(enable, func) {
         if (!enable) {
             return
         }
