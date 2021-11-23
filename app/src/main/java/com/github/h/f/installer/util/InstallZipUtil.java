@@ -96,10 +96,7 @@ public final class InstallZipUtil {
 
         private boolean isComplete() {
             return mVersion != null
-                    && mVersionInt > 0
-                    && mArch != null
-                    && mMinSdk > 0
-                    && mMaxSdk > 0;
+                    && mVersionInt > 0;
         }
 
         public String getVersion() {

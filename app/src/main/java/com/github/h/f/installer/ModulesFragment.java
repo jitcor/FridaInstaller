@@ -28,6 +28,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +42,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +61,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -74,6 +77,7 @@ import com.github.h.f.installer.repo.ReleaseType;
 import com.github.h.f.installer.repo.RepoDb;
 import com.github.h.f.installer.repo.RepoDb.RowNotFoundException;
 import com.github.h.f.installer.util.DownloadsUtil;
+import com.github.h.f.installer.util.FridaUtil;
 import com.github.h.f.installer.util.ModuleUtil;
 import com.github.h.f.installer.util.ModuleUtil.InstalledModule;
 import com.github.h.f.installer.util.ModuleUtil.ModuleListener;
@@ -81,6 +85,8 @@ import com.github.h.f.installer.util.NavUtil;
 import com.github.h.f.installer.util.RepoLoader;
 import com.github.h.f.installer.util.ThemeUtil;
 import com.github.h.f.installer.util.Util;
+
+import org.apache.commons.compress.utils.IOUtils;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 import static com.github.h.f.installer.FridaApp.WRITE_EXTERNAL_PERMISSION;
@@ -201,7 +207,7 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
                 importScript(fromLocal());
                 return true;
             case R.id.create_script:
-                createScript();
+//                createScript();
                 return true;
         }
         if (item.getItemId() == com.github.h.f.installer.R.id.bookmarks) {
@@ -296,60 +302,53 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createScript() {
-        //FridaInstaller/modules/xxxx.js
-        final EditText editText = new EditText(getActivity());
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle("输入脚本名")
-                .setView(editText)
-                .setPositiveButton("编辑脚本", null)
-                .setNegativeButton("取消", null).create();
-        dialog.show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = editText.getText().toString();
-                if (TextUtils.isEmpty(name)) {
-                    Toast.makeText(getActivity(), "请输入脚本名", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                File jsFile = new File(FridaApp.SCRIPTS_DIR, name + ".js");
-                File configFile = new File(FridaApp.SCRIPTS_DIR, name + ".config");
-                Util.makeSureFileExist(jsFile);
-                try {
-                    Util.ioCopy(getActivity().getAssets().open("gadget/template.js"), new FileOutputStream(jsFile));
-                    Util.ioCopy(getActivity().getAssets().open("gadget/template.config"), new FileOutputStream(configFile));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                try {
-                    Intent intent = new Intent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    //设置intent的Action属性
-                    intent.setAction(Intent.ACTION_VIEW);
-                    //获取文件file的MIME类型
-                    String type = "text/js";
-                    //设置intent的data和Type属性。
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.setDataAndType(/*uri*/FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID+".fileprovider", jsFile), type);
-                    }else {
-                        intent.setDataAndType(/*uri*/Uri.fromFile(jsFile), type);
-                    }
-                    startActivity(intent);
-//                    startActivity(Intent.createChooser(intent, getResources().getString(com.github.humenger.frida.installer.R.string.menuSend)));
-                } catch (ActivityNotFoundException e) {
-                    // TODO: handle exception
-                    Toast.makeText(getActivity(), "sorry", Toast.LENGTH_SHORT).show();
-                }
-                dialog.dismiss();
-            }
-        });
+//    private void createScript() {
+//        //FridaInstaller/modules/xxxx.js
+//        View view=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_script, null, false);
+//        EditText nameEd = view.findViewById(R.id.name);
+//        Spinner processesSpinner = view.findViewById(R.id.processes);
+//        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+//                .setTitle("创建脚本")
+//                .setView(view)
+//                .setPositiveButton("编辑脚本", null)
+//                .setNegativeButton("取消", null).create();
+//        dialog.show();
+//        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String name = nameEd.getText().toString();
+//                if (TextUtils.isEmpty(name)) {
+//                    Toast.makeText(getActivity(), "请输入脚本名", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                FridaUtil.installJavascript(name,"", (String) processesSpinner.getSelectedItem());
+//                try {
+//                    Intent intent = new Intent();
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    //设置intent的Action属性
+//                    intent.setAction(Intent.ACTION_VIEW);
+//                    //获取文件file的MIME类型
+//                    String type = "text/js";
+//                    //设置intent的data和Type属性。
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                        intent.setDataAndType(/*uri*/FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID+".fileprovider", jsFile), type);
+//                    }else {
+//                        intent.setDataAndType(/*uri*/Uri.fromFile(jsFile), type);
+//                    }
+//                    startActivity(intent);
+////                    startActivity(Intent.createChooser(intent, getResources().getString(com.github.humenger.frida.installer.R.string.menuSend)));
+//                } catch (ActivityNotFoundException e) {
+//                    // TODO: handle exception
+//                    Toast.makeText(getActivity(), "sorry", Toast.LENGTH_SHORT).show();
+//                }
+//                dialog.dismiss();
+//            }
+//        });
+//
+//
+//    }
 
-
-    }
     private InputStream buildJsModule(InputStream inputStream,String name,String processName){
         String js = Util.ToString(inputStream);
         if(!TextUtils.isEmpty(js)){
@@ -358,29 +357,55 @@ public class ModulesFragment extends ListFragment implements ModuleListener {
         }
         return new ByteArrayInputStream(js.getBytes());
     }
-    private void importScript(Reader reader) {
+    private void importScript(InputStream reader) {
         if (reader == null) return;
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        String line = null;
         try {
-            while ((line = bufferedReader.readLine()) != null) {
+            byte[] data=IOUtils.toByteArray(reader);
+            View view=LayoutInflater.from(getActivity()).inflate(R.layout.dialog_script, null, false);
+            EditText nameEd = view.findViewById(R.id.name);
+            Spinner processesSpinner = view.findViewById(R.id.processes);
+            String[] processList =FridaUtil.getProcessList(getActivity());
+            //自定义选择填充后的字体样式
+            //只能是textview样式，否则报错：ArrayAdapter requires the resource ID to be a TextView
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_list_item_1, processList);
+            processesSpinner.setAdapter(spinnerAdapter);
+            final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setTitle("导入脚本")
+                    .setView(view)
+                    .setPositiveButton("确定", null)
+                    .setNegativeButton("取消", null).create();
+            dialog.show();
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String name = nameEd.getText().toString();
+                    if (TextUtils.isEmpty(name)) {
+                        Toast.makeText(getActivity(), "请输入脚本名", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    FridaUtil.installJavascript(name,new String(data), (String) processesSpinner.getSelectedItem());
+                    Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
 
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
+        System.out.println();
     }
 
-    private Reader fromClipboard() {
+    private InputStream fromClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard != null && clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
             String s = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
-            return new StringReader(s);
+            return new ByteArrayInputStream(s.getBytes());
         }
         return null;
     }
 
-    private Reader fromLocal() {
+    private InputStream fromLocal() {
 
         return null;
     }

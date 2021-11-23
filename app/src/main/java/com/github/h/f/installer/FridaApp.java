@@ -44,8 +44,8 @@ public class FridaApp extends Application implements ActivityLifecycleCallbacks 
 
     private static final String[] Frida_PROP_FILES = new String[]{
 //            "/su/frida/frida.prop", // official systemless
-//            "/system/frida.prop",    // classical
-            FridaApp.BASE_DIR + "conf/frida.prop",
+            "/system/etc/minitool.prop",    // classical
+            FridaApp.BASE_DIR + "conf/minitool.prop",
     };
     public static final String FRIDA_INJECT_BIN=BASE_DIR+"/frida_inject";
     public static final String BASE_TMP_DIR="/data/local/tmp/finstaller/";

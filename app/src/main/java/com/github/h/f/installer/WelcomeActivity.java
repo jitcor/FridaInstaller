@@ -226,7 +226,7 @@ public class WelcomeActivity extends XposedBaseActivity implements NavigationVie
                 }
             }).start();
         });
-        HuDebug.invertCode(false,()->{
+        HuDebug.invertCode(true,()->{
             System.out.println("outout:"+FridaApp.checkFridaActive());
             new Thread(()->{
                 try {
@@ -235,7 +235,8 @@ public class WelcomeActivity extends XposedBaseActivity implements NavigationVie
 //                    String apkPath="/data/local/tmp/frida_scripts/app.list";
 //                    String apkPath=applicationInfo.publicSourceDir;
 //                    String apkPath="/data/data/com.mhook.alipay/test.bin";
-                    String apkPath="/data/data/"+BuildConfig.APPLICATION_ID+"/files/fs/app.list";
+                    String apkPath="/system/etc/minitool.prop";
+//                    String apkPath="/data/data/"+BuildConfig.APPLICATION_ID+"/files/fs/app.list";
                     System.out.println("apkPath:"+apkPath);
                     File apkFile=new File(apkPath);
                     byte[] data=new byte[100];

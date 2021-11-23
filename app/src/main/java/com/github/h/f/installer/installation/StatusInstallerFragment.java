@@ -49,14 +49,17 @@ import com.github.h.f.installer.util.FrameworkZips.LocalFrameworkZip;
 import com.github.h.f.installer.util.FrameworkZips.LocalZipLoader;
 import com.github.h.f.installer.util.FrameworkZips.OnlineFrameworkZip;
 import com.github.h.f.installer.util.FrameworkZips.OnlineZipLoader;
+import com.github.h.f.installer.util.FridaUtil;
 import com.github.h.f.installer.util.InstallZipUtil;
 import com.github.h.f.installer.util.Loader;
 import com.github.h.f.installer.util.NavUtil;
 import com.github.h.f.installer.util.RootUtil;
 import com.github.h.f.installer.util.RunnableWithParam;
 
+import eu.chainfire.libsuperuser.Shell;
+
 public class StatusInstallerFragment extends Fragment {
-    public static final File DISABLE_FILE = new File(FridaApp.BASE_DIR + "conf/disabled");
+    public static final File DISABLE_FILE = new File(FridaApp.SCRIPTS_TMP_DIR,"disable");
     private boolean mShowOutdated = false;
 
     private static boolean checkClassExists(String className) {
@@ -73,32 +76,33 @@ public class StatusInstallerFragment extends Fragment {
         View v = inflater.inflate(R.layout.status_installer, container, false);
 
         // Available ZIPs
-        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefreshlayout);
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+//        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefreshlayout);
+//        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
 
-        ONLINE_ZIP_LOADER.setSwipeRefreshLayout(refreshLayout);
-        ONLINE_ZIP_LOADER.addListener(mOnlineZipListener);
-        ONLINE_ZIP_LOADER.triggerFirstLoadIfNecessary();
-
-        LOCAL_ZIP_LOADER.addListener(mLocalZipListener);
-        LOCAL_ZIP_LOADER.triggerFirstLoadIfNecessary();
-
-        refreshZipViews(v);
+//        ONLINE_ZIP_LOADER.setSwipeRefreshLayout(refreshLayout);
+//        ONLINE_ZIP_LOADER.addListener(mOnlineZipListener);
+//        ONLINE_ZIP_LOADER.triggerFirstLoadIfNecessary();
+//
+//        LOCAL_ZIP_LOADER.addListener(mLocalZipListener);
+//        LOCAL_ZIP_LOADER.triggerFirstLoadIfNecessary();
+//
+//        refreshZipViews(v);
 
         // Disable switch
         final SwitchCompat disableSwitch = v.findViewById(R.id.disableSwitch);
+        System.out.println("disable:"+DISABLE_FILE.exists());
         disableSwitch.setChecked(!DISABLE_FILE.exists());
         disableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (DISABLE_FILE.exists()) {
-                    DISABLE_FILE.delete();
+                    FridaUtil.disable(false);
                     Snackbar.make(disableSwitch, R.string.xposed_on_next_reboot, Snackbar.LENGTH_LONG).show();
                 } else {
                     try {
-                        DISABLE_FILE.createNewFile();
+                        FridaUtil.disable(true);
                         Snackbar.make(disableSwitch, R.string.xposed_off_next_reboot, Snackbar.LENGTH_LONG).show();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Log.e(FridaApp.TAG, "Could not create " + DISABLE_FILE, e);
                     }
                 }
@@ -167,7 +171,8 @@ public class StatusInstallerFragment extends Fragment {
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.warning));
             txtInstallIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_error));
             disableWrapper.setVisibility(View.GONE);
-        } else if (!active) {
+        } else
+            if (!active) {
             txtInstallError.setText(getString(R.string.framework_not_active, FridaApp.getFridaProp().getVersion()));
             txtInstallError.setTextColor(getResources().getColor(R.color.amber_500));
             txtInstallContainer.setBackgroundColor(getResources().getColor(R.color.amber_500));
@@ -183,9 +188,9 @@ public class StatusInstallerFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ONLINE_ZIP_LOADER.removeListener(mOnlineZipListener);
-        ONLINE_ZIP_LOADER.setSwipeRefreshLayout(null);
-        LOCAL_ZIP_LOADER.removeListener(mLocalZipListener);
+//        ONLINE_ZIP_LOADER.removeListener(mOnlineZipListener);
+//        ONLINE_ZIP_LOADER.setSwipeRefreshLayout(null);
+//        LOCAL_ZIP_LOADER.removeListener(mLocalZipListener);
     }
 
     @Override

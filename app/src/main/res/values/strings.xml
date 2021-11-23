@@ -51,8 +51,8 @@
     <string name="flash_error_not_flashable_in_app">This file can only be flashed via recovery.</string>
     <string name="flash_error_default">Error %d occurred</string>
     <string name="status">Frida Status</string>
-    <string name="xposed_on_next_reboot">Frida Framework will be enabled on next reboot</string>
-    <string name="xposed_off_next_reboot">Frida Framework will be disabled on next reboot</string>
+    <string name="xposed_on_next_reboot">Frida will be enabled on next reboot</string>
+    <string name="xposed_off_next_reboot">Frida will be disabled on next reboot</string>
     <string name="show_outdated">Show outdated versions</string>
     <string name="framework_device_info">Your device</string>
     <string name="framework_install">Install</string>
